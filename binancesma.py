@@ -8,7 +8,7 @@ import time
 from bfxhfindicators import sma
 BASE_URL = 'https://api.binance.com'
 
-TIMEFRAME = '1m'
+TIMEFRAME = '30m'
 SMA_PERIODS = [5, 12] #use only 2
 SMA_POINTS = ['close', 'close'] 
 LIMIT_NO = max(SMA_PERIODS)
@@ -19,7 +19,11 @@ sma_values = {}
 last_action = 'sell'
 saldo = 100000
 
+#file handling for testing
+filu = open('kaupat.txt', 'a')
+
 print(symbol)
+filu.write(' ' + '\n'+ str(symbol) + ' ' + str(TIMEFRAME) + ' ' + str(SMA_PERIODS) + ' ' + str(SMA_POINTS) + '\n')
 payload = {
   'symbol': symbol,
   'interval': TIMEFRAME,
@@ -31,13 +35,16 @@ def treidaa(symbooli, mitatehda, hinta):
 # if mitatehda = 1 then buy if 0 then sell
   if mitatehda == 'sell':
     print('+' + str(hinta))
+    filu.write('+' + str(hinta) + '\n')
   elif mitatehda == 'buy':
     print('-' + str(hinta))
+    filu.write('-' + str(hinta) + '\n')
   return 1
 
 #loop until end of the world
 while saldo > 0 and saldo < 200000:
   #get candles  
+  time.sleep(30)  
   resp = requests.get(BASE_URL + '/api/v3/klines', params=payload)
   klines = json.loads(resp.content)
 
@@ -71,3 +78,5 @@ while saldo > 0 and saldo < 200000:
     treidaa(symbol, 'sell', parsed_klines[-1]['close'])
     last_action = 'sell'
     saldo = saldo + parsed_klines[-1]['close']
+
+filu.close()
