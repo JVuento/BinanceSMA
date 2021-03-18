@@ -1,3 +1,4 @@
+
 import requests
 import json
 import os
@@ -8,8 +9,8 @@ import time
 from bfxhfindicators import sma
 BASE_URL = 'https://api.binance.com'
 
-TIMEFRAME = '30m'
-SMA_PERIODS = [5, 12] #use only 2
+TIMEFRAME = '15m'
+SMA_PERIODS = [5, 10] #use only 2
 SMA_POINTS = ['close', 'close'] 
 LIMIT_NO = max(SMA_PERIODS)
 symbol = ['BTCUSDT']
@@ -44,7 +45,7 @@ def treidaa(symbooli, mitatehda, hinta):
 #loop until end of the world
 while saldo > 0 and saldo < 200000:
   #get candles  
-  time.sleep(30)  
+  time.sleep(120)  
   resp = requests.get(BASE_URL + '/api/v3/klines', params=payload)
   klines = json.loads(resp.content)
 
