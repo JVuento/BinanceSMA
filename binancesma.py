@@ -9,11 +9,11 @@ import time
 from bfxhfindicators import sma
 BASE_URL = 'https://api.binance.com'
 
-TIMEFRAME = '15m'
-SMA_PERIODS = [5, 10] #use only 2
+TIMEFRAME = '5m'
+SMA_PERIODS = [2, 13] #use only 2
 SMA_POINTS = ['close', 'close'] 
 LIMIT_NO = max(SMA_PERIODS)
-symbol = ['BTCUSDT']
+symbol = ['BTCUSDC']
 candles = {}
 prices = {}
 sma_values = {}

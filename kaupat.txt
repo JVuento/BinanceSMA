@@ -28,3 +28,6 @@
 +58325.43
  
 ['BTCUSDT'] 15m [5, 10] ['close', 'close']
+ 
+['BTCUSDT'] 5m [2, 13] ['close', 'close']
+-58440.05
