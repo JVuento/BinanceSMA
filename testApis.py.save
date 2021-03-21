@@ -11,7 +11,7 @@ def getDepth(symbooli):
 
 #place test market buy order
 def makeTestBuy(symbooli):
-    print(client.create_order(symbol = symbooli, side = 'SELL', type = 'MARKET', quantity = 10))
+    print(client.create_test_order(symbol = symbooli, side = 'BUY', type = 'MARKET', quantity = 100))
     return 1
 print(makeTestBuy('ADAUSDT'))
 
@@ -24,8 +24,6 @@ def getBalance(symbooli):
 #get latest price
 def getLatestPrice(symbooli):
     price = client.get_symbol_ticker(symbol=symbooli)
-    return price
-#print(getLatestPrice('ADABTC'))
-
+    return pri#print(getLatestPrice('ADABTC'))
 
 
