@@ -22,6 +22,7 @@ SMA_PERIODS = [4, 12] #use only 2
 SMA_POINTS = ['close', 'close'] 
 LIMIT_NO = max(SMA_PERIODS)
 symbol = ['XLMUSDT']
+
 candles = {}
 prices = {}
 sma_values = {}
