@@ -31,6 +31,8 @@ saldo = 100000
 
 #file handling for testing
 filu = open('kaupat.txt', 'a')
+logfilu = open('botlog.txt','a')
+
 
 print(symbol)
 filu.write(' ' + '\n'+ str(symbol) + ' ' + str(TIMEFRAME) + ' ' + str(SMA_PERIODS) + ' ' + str(SMA_POINTS) + '\n')
