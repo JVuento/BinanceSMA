@@ -29,7 +29,6 @@
  
 ['BTCUSDT'] 15m [5, 10] ['close', 'close']
  
-
 ['BTCUSDT'] 15m [5, 10] ['close', 'close']
  
 ['BTCUSDT'] 15m [5, 10] ['close', 'close']
@@ -74,6 +73,52 @@
 ['XLMUSDT'] 15m [5, 10] ['close', 'close']
  
 ['XLMUSDT'] 15m [4, 12] ['close', 'close']
-
-['BTCUSDT'] 5m [2, 13] ['close', 'close']
--58440.05
+ 
+['BTCBUSD'] 15m [4, 12] ['close', 'close']
+-57292.04
+ 
+['BTCBUSD'] 15m [4, 12] ['close', 'close']
+-57276.72
+ 
+['XLMUSDT'] 15m [4, 12] ['close', 'close']
+-0.403
+ 
+['XLMUSDT'] 15m [4, 12] ['close', 'close']
+-0.40253
+ 
+['XLMUSDT'] 15m [4, 12] ['close', 'close']
+-0.40422
+ 
+['XLMUSDT'] 15m [4, 12] ['close', 'close']
+-0.40363
+ 
+['XLMUSDT'] 15m [4, 12] ['close', 'close']
+ 
+['XLMUSDT'] 15m [4, 12] ['close', 'close']
+ 
+['XLMUSDT'] 15m [4, 12] ['close', 'close']
+ 
+['XLMUSDT'] 15m [4, 12] ['close', 'close']
+-0.4053
+ 
+['XLMUSDT'] 15m [4, 12] ['close', 'close']
+ 
+['XLMUSDT'] 15m [4, 12] ['close', 'close']
+ 
+['XLMUSDT'] 15m [4, 12] ['close', 'close']
+-0.40433
++0.40233
+-0.4032
++0.40214
+ 
+['XLMUSDT'] 15m [4, 12] ['close', 'close']
+ 
+['XLMUSDT'] 15m [4, 12] ['close', 'close']
+ 
+['XLMUSDT'] 15m [4, 12] ['close', 'close']
+ 
+['XLMUSDT'] 15m [4, 12] ['close', 'close']
+ 
+['XLMUSDT'] 15m [4, 12] ['close', 'close']
+ 
+['XLMUSDT'] 15m [4, 12] ['close', 'close']
