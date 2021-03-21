@@ -41,13 +41,18 @@ payload = {
 
 #args: symbol, side, type, quantity
 def do_trade(sy, si, ty, qu):
+  print(sy, si, ty, qu)
   try:
       buy_order = client.create_order(
         symbol=sy,
         side=si,
         type=ty,
         quantity=qu)
-      print("Trade done: " + sy + si + ty + str(qu))
+      print("Trade done: ")
+      print(sy)
+      print(si)
+      print(ty)
+      print(str(qu))
   except BinanceAPIException as e:
       # error handling goes here
       print(e)
@@ -99,13 +104,13 @@ while saldo > 0 and saldo < 200000:
   #triggers buy and changes last_action
   if last_action == 'sell' and sma1_value > sma2_value:
     treidaa(symbol, 'buy', parsed_klines[-1]['close'])
-    do_trade(symbol, 'BUY', 'MARKET', 80)
+    do_trade(symbol[0], 'BUY', 'MARKET', 80)
     last_action = 'buy'
     saldo = saldo - parsed_klines[-1]['close']
   #triggers sell and changes last_action
   elif last_action == 'buy' and sma2_value > sma1_value:
-    treidaa(symbol, 'sell', parsed_klines[-1]['close'])
-    do_trade(symbol, 'SELL', 'MARKET', 80)
+    treidaa(symbol[0], 'sell', parsed_klines[-1]['close'])
+    do_trade(symbol[0], 'SELL', 'MARKET', 80)
     last_action = 'sell'
     saldo = saldo + parsed_klines[-1]['close']
 
