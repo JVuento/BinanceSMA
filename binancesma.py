@@ -1,79 +1,58 @@
+#==============================================================================================================
+# BinaceSMA.py
+# small bot to trade in binance with help of SMA x 2
+#
+#
+# Before run make sure you have bfx-hf-indicators-p and python-binance installed in you python : 
+#  pip install git+https://github.com/bitfinexcom/bfx-hf-indicators-py 
+#  pip install python-binance
+#  more info about python-binance lib here: https://algotrading101.com/learn/binance-python-api-guide/
+#
+#==============================================================================================================#
 
 import requests
 import json
 import os
+import datetime
 import time
-#run in shell: 
-# pip install git+https://github.com/bitfinexcom/bfx-hf-indicators-py 
-#until i get this figured out
+from datetime import datetime
 from bfxhfindicators import sma
-#pip install python-binance
-#more info about python-binance lib here: https://algotrading101.com/learn/binance-python-api-guide/
+from secrets import *
 from binance.client import Client
 from binance.exceptions import BinanceAPIException, BinanceOrderException
-api_key = os.environ.get('binance_api')
-api_secret = os.environ.get('binance_secret')
-client = Client(api_key, api_secret)
-#print(client.get_account()) #this prints the account balance
 
+client = Client(API_KEY, API_SECRET)
+symbol = 'REEFUSDT'
 BASE_URL = 'https://api.binance.com'
-TIMEFRAME = '15m'
-SMA_PERIODS = [4, 12] #use only 2
+TIMEFRAME = SIGNALS[symbol][0]
+SMA_PERIODS = [SIGNALS[symbol][1], SIGNALS[symbol][2]] #use only 2
 SMA_POINTS = ['close', 'close'] 
 LIMIT_NO = max(SMA_PERIODS)
-symbol = ['XLMUSDT']
+
+maara = 1500
 
 candles = {}
 prices = {}
 sma_values = {}
-last_action = 'sell'
+last_action = 'SELL'
+tyyppi = 'MARKET'
 saldo = 100000
 
-#file handling for testing
-filu = open('kaupat.txt', 'a')
-logfilu = open('botlog.txt','a')
 
+#logging function, writes argument in log file
+def logging(teksti):
+  logfilu = open('botlog.txt','a')
+  logfilu.write(str(datetime.now()) + '; ' + teksti+ '\n' )
+  print(str(datetime.now()) + '; ' + teksti)
+  logfilu.close()
 
-print(symbol)
-filu.write(' ' + '\n'+ str(symbol) + ' ' + str(TIMEFRAME) + ' ' + str(SMA_PERIODS) + ' ' + str(SMA_POINTS) + '\n')
+#set payload for fetching klines, will be fixed later to use client also
 payload = {
   'symbol': symbol,
   'interval': TIMEFRAME,
   'limit': LIMIT_NO
-}
-
-#args: symbol, side, type, quantity
-def do_trade(sy, si, ty, qu):
-  print(sy, si, ty, qu)
-  try:
-      buy_order = client.create_order(
-        symbol=sy,
-        side=si,
-        type=ty,
-        quantity=qu)
-      print("Trade done: ")
-      print(sy)
-      print(si)
-      print(ty)
-      print(str(qu))
-  except BinanceAPIException as e:
-      # error handling goes here
-      print(e)
-  except BinanceOrderException as e:
-      # error handling goes here
-      print(e)
-
-#function for trade
-def treidaa(symbooli, mitatehda, hinta):
-# if mitatehda = 1 then buy if 0 then sell
-  if mitatehda == 'sell':
-    print('+' + str(hinta))
-    filu.write('+' + str(hinta) + '\n')
-  elif mitatehda == 'buy':
-    print('-' + str(hinta))
-    filu.write('-' + str(hinta) + '\n')
-  return 1
-
+}      
+print(payload)
 #loop until end of the world
 while saldo > 0 and saldo < 200000:
   #get candles  
@@ -101,20 +80,28 @@ while saldo > 0 and saldo < 200000:
     sma2.add(kline[SMA_POINTS[1]])
   sma1_value = sma1.v() 
   sma2_value = sma2.v()
-  print("SMA 1 (" + str(SMA_PERIODS[0]) + ")" + "  : " + str(sma1_value))
-  print("SMA 2 (" + str(SMA_PERIODS[1]) + ")" + " : " + str(sma2_value))
-  
+  print(symbol + ', SMA1: ' + str(sma1_value) + ', SMA2: ' + str(sma2_value))
   #triggers buy and changes last_action
-  if last_action == 'sell' and sma1_value > sma2_value:
-    treidaa(symbol, 'buy', parsed_klines[-1]['close'])
-    do_trade(symbol[0], 'BUY', 'MARKET', 80)
-    last_action = 'buy'
-    saldo = saldo - parsed_klines[-1]['close']
-  #triggers sell and changes last_action
-  elif last_action == 'buy' and sma2_value > sma1_value:
-    treidaa(symbol[0], 'sell', parsed_klines[-1]['close'])
-    do_trade(symbol[0], 'SELL', 'MARKET', 80)
-    last_action = 'sell'
-    saldo = saldo + parsed_klines[-1]['close']
+  if (last_action == 'SELL' and sma1_value > sma2_value) or (last_action == 'BUY' and sma2_value > sma1_value):
+    if  last_action == 'SELL': suunta =  'BUY'
+    elif  last_action == 'BUY': suunta =  'SELL'
+    logging('Trade:' + str(symbol) + ',' +  str(suunta) + ',' + str(tyyppi) + ',' + str(maara))
+    #testing purposes use create_test_order instead of create_order
+    try:
+      buy_order = client.create_order(
+        symbol=symbol,
+        side=suunta,
+        type=tyyppi,
+        quantity=maara)
+    except BinanceAPIException as e:
+      # error handling goes here
+      logging('Trade failed:' +  str(e))
+      continue
+    except BinanceOrderException as e:
+      # error handling goes here
+      logging('Trade failed:' +  str(e))  
+      continue
+    logging('Trade succesfull: ' + str(buy_order))
+    last_action = suunta
 
 filu.close()

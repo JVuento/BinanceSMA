@@ -51,3 +51,8 @@ secret*.*
 
 #kaupat
 kaupat*.*
+botlog*
+*.log
+
+#cache
+__py*.*
