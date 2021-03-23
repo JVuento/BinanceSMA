@@ -1,6 +1,6 @@
-from secrets import *
+from templatesecrets import *
 from binance.client import Client
-
+import sys
 client = Client(API_KEY, API_SECRET)
 
 #get market depth
@@ -31,3 +31,7 @@ def getLatestPrice(symbooli):
 print(SIGNALS['BTCUSDT'])
 pp = SIGNALS['BTCUSDT']
 print(pp[1])
+argumentit = sys.argv
+if len(sys.argv)<2: symbol = 'REEFUSDT'
+else: symbol = argumentit[1]
+print(symbol)
