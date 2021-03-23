@@ -19,7 +19,7 @@ import sys
 from datetime import datetime
 from bfxhfindicators import sma
 #from secrets import *
-from templatesecrets import *
+from secrets import *
 from binance.client import Client
 from binance.exceptions import BinanceAPIException, BinanceOrderException
 
@@ -40,7 +40,14 @@ kolikko2 = SIGNALS[symbol][5]
 candles = {}
 prices = {}
 sma_values = {}
-last_action = 'SELL'
+try:
+  kk = client.get_asset_balance(asset=kolikko1)
+  if kk => maara and kk > 0: last_action = 'BUY'
+  else: last_action = 'SELL'
+except:
+  logging('getBalance failed:' +  str(e))
+  print('getBalance failed:' +  str(e))
+  sys.exit()
 tyyppi = 'MARKET'
 saldo = 100000
 balance=0
@@ -98,14 +105,22 @@ while saldo > 0 and saldo < 200000:
     if  last_action == 'SELL':
       suunta =  'BUY'
       if maara == 0 :
-        balance = client.get_asset_balance(asset=kolikko2)
+        try:
+          balance = client.get_asset_balance(asset=kolikko2)
+        except:
+          logging('getBalance failed:' +  str(e))
+          continue
         balance = balance * 0,98
         ostolause = 'symbol=' + str(symbol) + ',side=' + str(suunta) + ',type=' + str(tyyppi) + ',quoteOrderQty=' + str(balance)
       else: ostolause = 'symbol=' + str(symbol) + ',side=' + str(suunta) + ',type=' + str(tyyppi) + ',quantity=' + str(maara)
     elif  last_action == 'BUY':
       suunta =  'SELL'
       if maara == 0 :
-        balance = client.get_asset_balance(asset=kolikko1)
+        try:
+          balance = client.get_asset_balance(asset=kolikko1)
+        except:
+          logging('getBalance failed:' +  str(e))
+          continue
         ostolause = 'symbol=' + str(symbol) + ',side=' + str(suunta) + ',type=' + str(tyyppi) + ',quantity=' + str(balance)
       else: ostolause = 'symbol=' + str(symbol) + ',side=' + str(suunta) + ',type=' + str(tyyppi) + ',quantity=' + str(maara)
     logging('Trade:' + str(ostolause))

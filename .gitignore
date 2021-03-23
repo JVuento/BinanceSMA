@@ -56,3 +56,5 @@ botlog*
 
 #cache
 __py*.*
+__pycache__
+__pycache__*
