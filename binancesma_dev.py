@@ -25,7 +25,7 @@ from binance.exceptions import BinanceAPIException, BinanceOrderException
 
 argumentit = sys.argv
 client = Client(API_KEY, API_SECRET)
-if len(sys.argv)<2: symbol = 'REEFUSDT'
+if len(sys.argv)<2: symbol = 'DODOBUSD'
 else: symbol = argumentit[1]
 BASE_URL = 'https://api.binance.com'
 TIMEFRAME = SIGNALS[symbol][0]
@@ -40,14 +40,11 @@ kolikko2 = SIGNALS[symbol][5]
 candles = {}
 prices = {}
 sma_values = {}
-try:
-  kk = client.get_asset_balance(asset=kolikko1)
-  if kk => maara and kk > 0: last_action = 'BUY'
-  else: last_action = 'SELL'
-except:
-  logging('getBalance failed:' +  str(e))
-  print('getBalance failed:' +  str(e))
-  sys.exit()
+kk = client.get_asset_balance(asset=kolikko1)['free']
+print(kk)
+kk = float(kk)
+if kk >= maara and kk > 0: last_action = 'BUY'
+else: last_action = 'SELL'
 tyyppi = 'MARKET'
 saldo = 100000
 balance=0
@@ -73,7 +70,7 @@ while saldo > 0 and saldo < 200000:
   time.sleep(60)
   try:
     resp = requests.get(BASE_URL + '/api/v3/klines', params=payload)
-  except:
+  except Exception as e:
     logging('Loop failed:' +  str(e))
     continue
   klines = json.loads(resp.content)
@@ -101,32 +98,45 @@ while saldo > 0 and saldo < 200000:
   print(symbol + ', SMA1: ' + str(sma1_value) + ', SMA2: ' + str(sma2_value))
   #triggers buy and changes last_action
   if (last_action == 'SELL' and sma1_value > sma2_value) or (last_action == 'BUY' and sma2_value > sma1_value):
-    
+  
+    try:
+      balance = client.get_asset_balance(asset=kolikko2)['free']
+      print(balance)
+    except Exception as e:
+      logging('getBalance failed:' +  str(e))
+      continue
+
     if  last_action == 'SELL':
       suunta =  'BUY'
       if maara == 0 :
         try:
           balance = client.get_asset_balance(asset=kolikko2)
-        except:
+          print(balance)
+        except Exception as e:
           logging('getBalance failed:' +  str(e))
           continue
         balance = balance * 0,98
-        ostolause = 'symbol=' + str(symbol) + ',side=' + str(suunta) + ',type=' + str(tyyppi) + ',quoteOrderQty=' + str(balance)
-      else: ostolause = 'symbol=' + str(symbol) + ',side=' + str(suunta) + ',type=' + str(tyyppi) + ',quantity=' + str(maara)
+        print(balance)
+        ostolause = "client.create_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quoteOrderQty=" + str(balance) +")"
+      else: ostolause = "client.create_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quantity=" + str(maara)+")"
     elif  last_action == 'BUY':
       suunta =  'SELL'
       if maara == 0 :
         try:
           balance = client.get_asset_balance(asset=kolikko1)
-        except:
+        except Exception as e:
           logging('getBalance failed:' +  str(e))
           continue
-        ostolause = 'symbol=' + str(symbol) + ',side=' + str(suunta) + ',type=' + str(tyyppi) + ',quantity=' + str(balance)
-      else: ostolause = 'symbol=' + str(symbol) + ',side=' + str(suunta) + ',type=' + str(tyyppi) + ',quantity=' + str(maara)
+        ostolause = "client.create_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quantity=" + str(balance)+")"
+      else: ostolause = "client.create_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quantity=" + str(maara)+")"
+    
+    
+    
     logging('Trade:' + str(ostolause))
     #testing purposes use create_test_order instead of create_order
     try:
-      buy_order = client.create_order(ostolause)
+      print(ostolause)
+      buy_order = eval(ostolause)
     except BinanceAPIException as e:
       # error handling goes here
       logging('Trade failed:' +  str(e))
@@ -135,6 +145,9 @@ while saldo > 0 and saldo < 200000:
       # error handling goes here
       logging('Trade failed:' +  str(e))  
       continue
+    except Exception as e:
+      logging('Trade failed:' +  str(e))  
+      continue      
     logging('Trade succesfull: ' + str(buy_order))
     last_action = suunta
 
