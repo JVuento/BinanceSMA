@@ -111,7 +111,6 @@ while saldo > 0 and saldo < 200000:
   
     try:
       balance = client.get_asset_balance(asset=kolikko2)['free']
-      print(balance)
     except Exception as e:
       logging('getBalance failed:' +  str(e))
       continue
@@ -121,31 +120,31 @@ while saldo > 0 and saldo < 200000:
       if maara == 0 :
         try:
           balance = client.get_asset_balance(asset=kolikko2)['free']
-          print(balance)
         except Exception as e:
           logging('getBalance failed:' +  str(e))
           continue
-        balance = balance * 0,98
+        print('YOOOYOYOYOOO')
         print(balance)
-        ostolause = "client.create_test_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quoteOrderQty=" + str(balance) +")"
-      else: ostolause = "client.create_test_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quantity=" + str(maara)+")"
+        balance = round(float(balance) * 0.98, 2)
+        print(balance)
+        ostolause = "client.create_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quoteOrderQty=" + str(balance) +")"
+      else: ostolause = "client.create_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quantity=" + str(maara)+")"
     elif  last_action == 'BUY':
       suunta =  'SELL'
       if maara == 0 :
         try:
-          balance = client.get_asset_balance(asset=kolikko1)
+          balance = client.get_asset_balance(asset=kolikko1)['free']
         except Exception as e:
           logging('getBalance failed:' +  str(e))
           continue
-        ostolause = "client.create_test_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quantity=" + str(balance)+")"
-      else: ostolause = "client.create_test_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quantity=" + str(maara)+")"
+        ostolause = "client.create_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quantity=" + str(balance)+")"
+      else: ostolause = "client.create_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quantity=" + str(maara)+")"
     
     
     
     logging('Trade:' + str(ostolause))
     #testing purposes use create_test_order instead of create_order
     try:
-      print(ostolause)
       buy_order = eval(ostolause)
     except BinanceAPIException as e:
       # error handling goes here
