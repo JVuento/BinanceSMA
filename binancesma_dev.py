@@ -23,6 +23,18 @@ from secrets import *
 from binance.client import Client
 from binance.exceptions import BinanceAPIException, BinanceOrderException
 
+#logging function, writes argument in log file
+def logging(teksti):
+  logfilu = open('botlog.txt','a')
+  logfilu.write(str(datetime.now()) + '; ' + teksti+ '\n' )
+  print(str(datetime.now()) + '; ' + teksti)
+  logfilu.close()
+
+#get last price 
+def getLastPrice(symbooli):
+    tikkeri = client.get_ticker(symbol=symbooli)['lastPrice']
+    return tikkeri
+
 argumentit = sys.argv
 client = Client(API_KEY, API_SECRET)
 if len(sys.argv)<2: symbol = 'DODOBUSD'
@@ -43,19 +55,15 @@ sma_values = {}
 kk = client.get_asset_balance(asset=kolikko1)['free']
 print(kk)
 kk = float(kk)
-if kk >= maara and kk > 0: last_action = 'BUY'
+if kk >= maara and kk > (15/float(getLastPrice(symbol))): last_action = 'BUY'
 else: last_action = 'SELL'
+print('Last action: ' + str(last_action))
 tyyppi = 'MARKET'
 saldo = 100000
 balance=0
 ostolause = ''
 
-#logging function, writes argument in log file
-def logging(teksti):
-  logfilu = open('botlog.txt','a')
-  logfilu.write(str(datetime.now()) + '; ' + teksti+ '\n' )
-  print(str(datetime.now()) + '; ' + teksti)
-  logfilu.close()
+
 
 #set payload for fetching klines, will be fixed later to use client also
 payload = {
@@ -64,6 +72,8 @@ payload = {
   'limit': LIMIT_NO
 }      
 print(payload)
+
+
 #loop until end of the world
 while saldo > 0 and saldo < 200000:
   #get candles  
@@ -110,15 +120,15 @@ while saldo > 0 and saldo < 200000:
       suunta =  'BUY'
       if maara == 0 :
         try:
-          balance = client.get_asset_balance(asset=kolikko2)
+          balance = client.get_asset_balance(asset=kolikko2)['free']
           print(balance)
         except Exception as e:
           logging('getBalance failed:' +  str(e))
           continue
         balance = balance * 0,98
         print(balance)
-        ostolause = "client.create_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quoteOrderQty=" + str(balance) +")"
-      else: ostolause = "client.create_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quantity=" + str(maara)+")"
+        ostolause = "client.create_test_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quoteOrderQty=" + str(balance) +")"
+      else: ostolause = "client.create_test_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quantity=" + str(maara)+")"
     elif  last_action == 'BUY':
       suunta =  'SELL'
       if maara == 0 :
@@ -127,8 +137,8 @@ while saldo > 0 and saldo < 200000:
         except Exception as e:
           logging('getBalance failed:' +  str(e))
           continue
-        ostolause = "client.create_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quantity=" + str(balance)+")"
-      else: ostolause = "client.create_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quantity=" + str(maara)+")"
+        ostolause = "client.create_test_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quantity=" + str(balance)+")"
+      else: ostolause = "client.create_test_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quantity=" + str(maara)+")"
     
     
     

@@ -29,6 +29,12 @@ def getLatestPrice(symbooli):
     return price
 #print(getLatestPrice('ADABTC'))
 
+#get ticker
+def getTicker(symbooli):
+    tikkeri = client.get_ticker(symbol=symbooli)
+    return tikkeri
+print(getTicker('BTCUSDT'))
+
 
 #print(SIGNALS['BTCUSDT'])
 #pp = SIGNALS['BTCUSDT']
