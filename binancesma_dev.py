@@ -13,15 +13,12 @@
 import requests
 import json
 import os
-import datetime
 import time
 import sys
 from datetime import datetime
 from bfxhfindicators import sma
-#from secrets import *
 from secrets import *
 from binance.client import Client
-from binance.exceptions import BinanceAPIException, BinanceOrderException
 
 #logging function, writes argument in log file
 def logging(teksti):
@@ -35,35 +32,37 @@ def getLastPrice(symbooli):
     tikkeri = client.get_ticker(symbol=symbooli)['lastPrice']
     return tikkeri
 
-argumentit = sys.argv
+#check if script was called with argument for traded pair, if so use them
+def checkArgs(argumentit):
+  if len(argumentit)<2: return DEFPAIR
+  else: return argumentit[1]
+
+#define if there has already been buy before, if so then sell next, if not then buy next
+def checkLastAction(kolikko1):
+  kk = float(client.get_asset_balance(asset=kolikko1)['free'])
+  if kk >= maara and kk > (15/float(getLastPrice(symbol))): return 'BUY'
+  else: return 'SELL'
+
+#new client object
 client = Client(API_KEY, API_SECRET)
-if len(sys.argv)<2: symbol = 'DODOBUSD'
-else: symbol = argumentit[1]
+
+#set variables and values
 BASE_URL = 'https://api.binance.com'
-TIMEFRAME = SIGNALS[symbol][0]
-SMA_PERIODS = [SIGNALS[symbol][1], SIGNALS[symbol][2]] #use only 2
 SMA_POINTS = ['close', 'close'] 
-LIMIT_NO = max(SMA_PERIODS)
-
-maara = SIGNALS[symbol][3]
-kolikko1 = SIGNALS[symbol][4]
-kolikko2 = SIGNALS[symbol][5]
-
+tyyppi = 'MARKET'
+balance=0
+ostolause = ''
 candles = {}
 prices = {}
 sma_values = {}
-kk = client.get_asset_balance(asset=kolikko1)['free']
-print(kk)
-kk = float(kk)
-if kk >= maara and kk > (15/float(getLastPrice(symbol))): last_action = 'BUY'
-else: last_action = 'SELL'
-print('Last action: ' + str(last_action))
-tyyppi = 'MARKET'
-saldo = 100000
-balance=0
-ostolause = ''
-
-
+symbol=checkArgs(sys.argv)
+TIMEFRAME = SIGNALS[symbol][0]
+SMA_PERIODS = [SIGNALS[symbol][1], SIGNALS[symbol][2]] 
+LIMIT_NO = max(SMA_PERIODS)
+maara = SIGNALS[symbol][3]
+kolikko1 = SIGNALS[symbol][4]
+kolikko2 = SIGNALS[symbol][5]
+last_action = getLastAction(kolikko1)
 
 #set payload for fetching klines, will be fixed later to use client also
 payload = {
@@ -75,28 +74,28 @@ print(payload)
 
 
 #loop until end of the world
-while saldo > 0 and saldo < 200000:
+while 1 > 0
+
   #get candles  
-  time.sleep(60)
   try:
     resp = requests.get(BASE_URL + '/api/v3/klines', params=payload)
+    klines = json.loads(resp.content)
+    parsed_klines = []
+    for k in klines:
+      k_candle = {
+        'open': float(k[1]),
+        'high': float(k[2]),
+        'low': float(k[3]),
+        'close': float(k[4]),
+        'vol': float(k[5]) 
+      } 
+      parsed_klines.append(k_candle)
   except Exception as e:
-    logging('Loop failed:' +  str(e))
+    logging('Getting candle failed:' +  str(e))
     continue
-  klines = json.loads(resp.content)
 
-  #parse to get only needed values
-  parsed_klines = []
-  for k in klines:
-    k_candle = {
-      'open': float(k[1]),
-      'high': float(k[2]),
-      'low': float(k[3]),
-      'close': float(k[4]),
-      'vol': float(k[5]) 
-    } 
-    parsed_klines.append(k_candle)
 
+#get sma values
   sma1 = sma.SMA(SMA_PERIODS[0])
   sma2 = sma.SMA(SMA_PERIODS[1])
   for kline in parsed_klines:
@@ -106,15 +105,13 @@ while saldo > 0 and saldo < 200000:
   sma1_value = sma1.v() 
   sma2_value = sma2.v()
   print(symbol + ', SMA1: ' + str(sma1_value) + ', SMA2: ' + str(sma2_value))
-  #triggers buy and changes last_action
-  if (last_action == 'SELL' and sma1_value > sma2_value) or (last_action == 'BUY' and sma2_value > sma1_value):
-  
-    try:
-      balance = client.get_asset_balance(asset=kolikko2)['free']
-    except Exception as e:
-      logging('getBalance failed:' +  str(e))
-      continue
 
+
+
+#triggers buy and changes last_action
+  if (last_action == 'SELL' and sma1_value > sma2_value) or (last_action == 'BUY' and sma2_value > sma1_value):
+
+#defines clause for trade function, testing purposes use create_test_order instead of create_order
     if  last_action == 'SELL':
       suunta =  'BUY'
       if maara == 0 :
@@ -123,8 +120,6 @@ while saldo > 0 and saldo < 200000:
         except Exception as e:
           logging('getBalance failed:' +  str(e))
           continue
-        print('YOOOYOYOYOOO')
-        print(balance)
         balance = round(float(balance) * 0.98, 2)
         print(balance)
         ostolause = "client.create_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quoteOrderQty=" + str(balance) +")"
@@ -133,31 +128,23 @@ while saldo > 0 and saldo < 200000:
       suunta =  'SELL'
       if maara == 0 :
         try:
-          balance = client.get_asset_balance(asset=kolikko1)['free']
+          balance = round(float(client.get_asset_balance(asset=kolikko1)['free']),6)
         except Exception as e:
           logging('getBalance failed:' +  str(e))
           continue
         ostolause = "client.create_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quantity=" + str(balance)+")"
       else: ostolause = "client.create_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quantity=" + str(maara)+")"
-    
-    
-    
     logging('Trade:' + str(ostolause))
-    #testing purposes use create_test_order instead of create_order
+    
+#handle trade
     try:
       buy_order = eval(ostolause)
-    except BinanceAPIException as e:
-      # error handling goes here
-      logging('Trade failed:' +  str(e))
-      continue
-    except BinanceOrderException as e:
-      # error handling goes here
-      logging('Trade failed:' +  str(e))  
-      continue
     except Exception as e:
       logging('Trade failed:' +  str(e))  
       continue      
     logging('Trade succesfull: ' + str(buy_order))
-    last_action = suunta
 
+#after successfull trade change it to last made action and sleep a bit before new round    
+    last_action = suunta
+  time.sleep(SLEEPTIME)
 filu.close()

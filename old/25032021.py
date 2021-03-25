@@ -15,13 +15,29 @@ import json
 import os
 import datetime
 import time
-import sys
 from datetime import datetime
 from bfxhfindicators import sma
-#from secrets import *
 from secrets import *
 from binance.client import Client
 from binance.exceptions import BinanceAPIException, BinanceOrderException
+
+client = Client(API_KEY, API_SECRET)
+symbol = 'REEFUSDT'
+BASE_URL = 'https://api.binance.com'
+TIMEFRAME = SIGNALS[symbol][0]
+SMA_PERIODS = [SIGNALS[symbol][1], SIGNALS[symbol][2]] #use only 2
+SMA_POINTS = ['close', 'close'] 
+LIMIT_NO = max(SMA_PERIODS)
+
+maara = 1500
+
+candles = {}
+prices = {}
+sma_values = {}
+last_action = 'SELL'
+tyyppi = 'MARKET'
+saldo = 100000
+
 
 #logging function, writes argument in log file
 def logging(teksti):
@@ -30,41 +46,6 @@ def logging(teksti):
   print(str(datetime.now()) + '; ' + teksti)
   logfilu.close()
 
-#get last price 
-def getLastPrice(symbooli):
-    tikkeri = client.get_ticker(symbol=symbooli)['lastPrice']
-    return tikkeri
-
-argumentit = sys.argv
-client = Client(API_KEY, API_SECRET)
-if len(sys.argv)<2: symbol = 'DODOBUSD'
-else: symbol = argumentit[1]
-BASE_URL = 'https://api.binance.com'
-TIMEFRAME = SIGNALS[symbol][0]
-SMA_PERIODS = [SIGNALS[symbol][1], SIGNALS[symbol][2]] #use only 2
-SMA_POINTS = ['close', 'close'] 
-LIMIT_NO = max(SMA_PERIODS)
-
-maara = SIGNALS[symbol][3]
-kolikko1 = SIGNALS[symbol][4]
-kolikko2 = SIGNALS[symbol][5]
-
-candles = {}
-prices = {}
-sma_values = {}
-kk = client.get_asset_balance(asset=kolikko1)['free']
-print(kk)
-kk = float(kk)
-if kk >= maara and kk > (15/float(getLastPrice(symbol))): last_action = 'BUY'
-else: last_action = 'SELL'
-print('Last action: ' + str(last_action))
-tyyppi = 'MARKET'
-saldo = 100000
-balance=0
-ostolause = ''
-
-
-
 #set payload for fetching klines, will be fixed later to use client also
 payload = {
   'symbol': symbol,
@@ -72,17 +53,11 @@ payload = {
   'limit': LIMIT_NO
 }      
 print(payload)
-
-
 #loop until end of the world
 while saldo > 0 and saldo < 200000:
   #get candles  
-  time.sleep(180)
-  try:
-    resp = requests.get(BASE_URL + '/api/v3/klines', params=payload)
-  except Exception as e:
-    logging('Loop failed:' +  str(e))
-    continue
+  time.sleep(60)  
+  resp = requests.get(BASE_URL + '/api/v3/klines', params=payload)
   klines = json.loads(resp.content)
 
   #parse to get only needed values
@@ -108,44 +83,16 @@ while saldo > 0 and saldo < 200000:
   print(symbol + ', SMA1: ' + str(sma1_value) + ', SMA2: ' + str(sma2_value))
   #triggers buy and changes last_action
   if (last_action == 'SELL' and sma1_value > sma2_value) or (last_action == 'BUY' and sma2_value > sma1_value):
-  
-    try:
-      balance = client.get_asset_balance(asset=kolikko2)['free']
-    except Exception as e:
-      logging('getBalance failed:' +  str(e))
-      continue
-
-    if  last_action == 'SELL':
-      suunta =  'BUY'
-      if maara == 0 :
-        try:
-          balance = client.get_asset_balance(asset=kolikko2)['free']
-        except Exception as e:
-          logging('getBalance failed:' +  str(e))
-          continue
-        print('YOOOYOYOYOOO')
-        print(balance)
-        balance = round(float(balance) * 0.98, 2)
-        print(balance)
-        ostolause = "client.create_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quoteOrderQty=" + str(balance) +")"
-      else: ostolause = "client.create_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quantity=" + str(maara)+")"
-    elif  last_action == 'BUY':
-      suunta =  'SELL'
-      if maara == 0 :
-        try:
-          balance = round(float(client.get_asset_balance(asset=kolikko1)['free']),6)
-        except Exception as e:
-          logging('getBalance failed:' +  str(e))
-          continue
-        ostolause = "client.create_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quantity=" + str(balance)+")"
-      else: ostolause = "client.create_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quantity=" + str(maara)+")"
-    
-    
-    
-    logging('Trade:' + str(ostolause))
+    if  last_action == 'SELL': suunta =  'BUY'
+    elif  last_action == 'BUY': suunta =  'SELL'
+    logging('Trade:' + str(symbol) + ',' +  str(suunta) + ',' + str(tyyppi) + ',' + str(maara))
     #testing purposes use create_test_order instead of create_order
     try:
-      buy_order = eval(ostolause)
+      buy_order = client.create_order(
+        symbol=symbol,
+        side=suunta,
+        type=tyyppi,
+        quantity=maara)
     except BinanceAPIException as e:
       # error handling goes here
       logging('Trade failed:' +  str(e))
@@ -154,9 +101,6 @@ while saldo > 0 and saldo < 200000:
       # error handling goes here
       logging('Trade failed:' +  str(e))  
       continue
-    except Exception as e:
-      logging('Trade failed:' +  str(e))  
-      continue      
     logging('Trade succesfull: ' + str(buy_order))
     last_action = suunta
 
