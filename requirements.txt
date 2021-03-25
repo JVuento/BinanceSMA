@@ -1,7 +1,2 @@
 requests
-json
-os
-datetime
-time
-sys
 bfxhindicators
