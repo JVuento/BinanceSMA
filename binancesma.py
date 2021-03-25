@@ -8,6 +8,7 @@
 #  pip install python-binance
 #  more info about python-binance lib here: https://algotrading101.com/learn/binance-python-api-guide/
 #
+# Remember you are using this at your own risk, don't come crying to us if it fucks up your wallet. Thank you.
 #==============================================================================================================#
 
 import requests
