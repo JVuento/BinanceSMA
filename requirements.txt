@@ -1,3 +1,7 @@
-django
-gunicorn
-django-heroku
+requests
+json
+os
+datetime
+time
+sys
+bfxhindicators
