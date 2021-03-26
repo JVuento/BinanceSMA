@@ -19,7 +19,7 @@ import time
 import sys
 from datetime import datetime
 from bfxhfindicators import sma
-#from secrets import *
+from templatesecrets import *
 from secrets import *
 from binance.client import Client
 from binance.exceptions import BinanceAPIException, BinanceOrderException
@@ -36,8 +36,13 @@ def getLastPrice(symbooli):
     tikkeri = client.get_ticker(symbol=symbooli)['lastPrice']
     return tikkeri
 
+#if using heroku, set env vars in Heroku CLI
+#heroku config:set API_KEY=<your api key>
+#heroku config:set API_SECRET=<your api secret>
+#then bring'em here
 API_KEY = os.getenv('API_KEY')
 API_SECRET = os.environ.get('API_SECRET')
+
 argumentit = sys.argv
 client = Client(API_KEY, API_SECRET)
 if len(sys.argv)<2: symbol = 'DODOBUSD'
