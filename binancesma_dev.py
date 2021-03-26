@@ -20,6 +20,7 @@ import math
 from datetime import datetime
 from bfxhfindicators import sma
 from secrets import *
+from settings import *
 from binance.client import Client
 from math import trunc
 

@@ -22,6 +22,7 @@ from datetime import datetime
 from bfxhfindicators import sma
 from templatesecrets import *
 from secrets import *
+from settings import *
 from binance.client import Client
 from binance.exceptions import BinanceAPIException, BinanceOrderException
 
