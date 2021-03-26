@@ -1,5 +1,5 @@
-#==============================================================================================================
-# BinaceSMA.py
+#==============================================================================================================#
+# BinaceSMA.py  
 # small bot to trade in binance with help of SMA x 2
 #
 #
@@ -16,10 +16,51 @@ import json
 import os
 import time
 import sys
+import math
 from datetime import datetime
 from bfxhfindicators import sma
 from secrets import *
 from binance.client import Client
+from math import trunc
+
+
+
+def truncate(number, decimals=0):
+    """
+    Returns a value truncated to a specific number of decimal places.
+    """
+    if not isinstance(decimals, int):
+        raise TypeError("decimal places must be an integer.")
+    elif decimals < 0:
+        raise ValueError("decimal places has to be 0 or more.")
+    elif decimals == 0:
+        return math.trunc(number)
+
+    factor = 10.0 ** decimals
+    return math.trunc(number * factor) / factor
+
+#writes last log info to index.html, for easier cloud usage
+def writeHtml(lause):
+  filu = open('index.html','w')
+  htmlalku = """
+  <!DOCTYPE html>
+  <html>
+  <head>
+  <meta http-equiv="refresh" content="1">
+  </head>
+  <body>
+  <h2>BinanceSMA """ + str(datetime.now()) + """</h2> 
+  <p>
+  """
+  htmlloppu = """
+  </p>
+  </body>
+  </html>
+  """
+  filu.write(htmlalku + lause + htmlloppu)
+  filu.close
+  return 1
+  
 
 #Logging function
 # logging(TYYPPI, PARI, LYHYT, PITKA, PRINT)
@@ -38,6 +79,7 @@ def logging(TYYPPI, PARI, LYHYT, PITKA, PRINT):
     else: logfilu = open('botlog.txt','a')
     logfilu.write(logiteksti)
     logfilu.close()
+  writeHtml(tyypit[TYYPPI] + ' ' + PARI + ' ' + LYHYT)
   return 1
 
 
@@ -134,7 +176,7 @@ while 1 > 0
         except Exception as e:
           logging(2, symbol, 'getBalance failed', str(e), 1)
           continue
-        balance = round(float(balance) * 0.98, 2)
+        balance = truncate(float(balance) * 0.98, 2)
         print(balance)
         ostolause = "client.create_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quoteOrderQty=" + str(balance) +")"
       else: ostolause = "client.create_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quantity=" + str(maara)+")"
@@ -142,7 +184,7 @@ while 1 > 0
       suunta =  'SELL'
       if maara == 0 :
         try:
-          balance = round(float(client.get_asset_balance(asset=kolikko1)['free']),6)
+          balance = truncate(float(client.get_asset_balance(asset=kolikko1)['free']),6)
         except Exception as e:
           logging(2, symbol, 'getBalance failed', str(e), 1)
           continue

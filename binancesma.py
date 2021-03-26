@@ -17,12 +17,27 @@ import os
 import datetime
 import time
 import sys
+import math
 from datetime import datetime
 from bfxhfindicators import sma
 from templatesecrets import *
 from secrets import *
 from binance.client import Client
 from binance.exceptions import BinanceAPIException, BinanceOrderException
+
+def truncate(number, decimals=0):
+    """
+    Returns a value truncated to a specific number of decimal places.
+    """
+    if not isinstance(decimals, int):
+        raise TypeError("decimal places must be an integer.")
+    elif decimals < 0:
+        raise ValueError("decimal places has to be 0 or more.")
+    elif decimals == 0:
+        return math.trunc(number)
+
+    factor = 10.0 ** decimals
+    return math.trunc(number * factor) / factor
 
 #logging function, writes argument in log file
 def logging(teksti):
@@ -133,7 +148,7 @@ while saldo > 0 and saldo < 200000:
           continue
         print('YOOOYOYOYOOO')
         print(balance)
-        balance = round(float(balance) * 0.98, 2)
+        balance = truncate(float(balance) * 0.98, 2)
         print(balance)
         ostolause = "client.create_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quoteOrderQty=" + str(balance) +")"
       else: ostolause = "client.create_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quantity=" + str(maara)+")"
@@ -141,7 +156,7 @@ while saldo > 0 and saldo < 200000:
       suunta =  'SELL'
       if maara == 0 :
         try:
-          balance = round(float(client.get_asset_balance(asset=kolikko1)['free']),6)
+          balance = truncate(float(client.get_asset_balance(asset=kolikko1)['free']),6)
         except Exception as e:
           logging('getBalance failed:' +  str(e))
           continue
