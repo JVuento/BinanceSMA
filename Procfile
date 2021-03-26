@@ -1,1 +1,1 @@
-web: python binancesma.py
+web: python binancesma.py XLMUSDT
