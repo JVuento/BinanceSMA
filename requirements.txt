@@ -2,3 +2,4 @@ requests
 git+https://github.com/bitfinexcom/bfx-hf-indicators-py
 binance
 python-binance
+gunicorn
