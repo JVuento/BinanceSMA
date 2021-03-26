@@ -1,1 +1,1 @@
-web: python binancesma.py XLMBUSD
+worker: python binancesma.py XLMBUSD
