@@ -54,9 +54,9 @@ def getLastPrice(symbooli):
 #if using heroku, set env vars in Heroku CLI
 #heroku config:set API_KEY=<your api key>
 #heroku config:set API_SECRET=<your api secret>
-#then bring'em here
+#then bring'em here. Commented out so far
 '''API_KEY = os.getenv('API_KEY')
-API_SECRET = os.environ.get('API_SECRET')'''
+API_SECRET = os.environ.get('API_SECRET')''' 
 
 argumentit = sys.argv
 client = Client(API_KEY, API_SECRET)
