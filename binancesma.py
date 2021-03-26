@@ -78,7 +78,7 @@ print(payload)
 #loop until end of the world
 while saldo > 0 and saldo < 200000:
   #get candles  
-  time.sleep(180)
+  time.sleep(120)
   try:
     resp = requests.get(BASE_URL + '/api/v3/klines', params=payload)
   except Exception as e:
