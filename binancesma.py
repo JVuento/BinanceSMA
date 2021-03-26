@@ -36,6 +36,8 @@ def getLastPrice(symbooli):
     tikkeri = client.get_ticker(symbol=symbooli)['lastPrice']
     return tikkeri
 
+API_KEY = os.getenv('API_KEY')
+API_SECRET = os.environ.get('API_SECRET')
 argumentit = sys.argv
 client = Client(API_KEY, API_SECRET)
 if len(sys.argv)<2: symbol = 'DODOBUSD'
