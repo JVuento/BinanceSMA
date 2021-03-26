@@ -55,8 +55,8 @@ def getLastPrice(symbooli):
 #heroku config:set API_KEY=<your api key>
 #heroku config:set API_SECRET=<your api secret>
 #then bring'em here. Commented out so far
-'''API_KEY = os.getenv('API_KEY')
-API_SECRET = os.environ.get('API_SECRET')''' 
+API_KEY = os.getenv('API_KEY')
+API_SECRET = os.environ.get('API_SECRET')
 
 argumentit = sys.argv
 client = Client(API_KEY, API_SECRET)
@@ -100,7 +100,7 @@ print(payload)
 #loop until end of the world
 while saldo > 0 and saldo < 200000:
   #get candles  
-  time.sleep(90)
+  time.sleep(120)
   try:
     resp = requests.get(BASE_URL + '/api/v3/klines', params=payload)
   except Exception as e:

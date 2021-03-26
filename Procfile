@@ -1,2 +1,1 @@
-worker: python binancesma.py XLMBUSD
-web: python binancesma.py XLMBUSD
+worker: python binancesma.py BTCUSDT
