@@ -12,7 +12,6 @@
 #==============================================================================================================#
 
 import requests
-import json
 import os
 import time
 import sys
@@ -72,7 +71,7 @@ def writeHtml(lause):
 def logging(TYYPPI, PARI, LYHYT, PITKA, PRINT):
   tyypit = {0: '[INFO]', 1: '[TRADE]', 2: '[ERROR]', 3: '[SYSTEM]'}
   if PRINT == 1:
-    printtiteksti = tyypit[TYYPPI] + ', ' + PARI + ': ' + LYHYT
+    printtiteksti = tyypit[TYYPPI] + ', ' + PARI + ', ' + LYHYT
     print(printtiteksti)
   logiteksti = tyypit[TYYPPI] + ', ' + str(datetime.now()) + ', ' + PARI + ', ' + LYHYT + ', ' + PITKA
   if TYYPPI != 0:
@@ -89,119 +88,102 @@ def getLastPrice(symbooli):
     tikkeri = client.get_ticker(symbol=symbooli)['lastPrice']
     return tikkeri
 
-#check if script was called with argument for traded pair, if so use them
-def checkArgs(argumentit):
-  if len(argumentit)<2: return DEFPAIR
-  else: return argumentit[1]
-
 #define if there has already been buy before, if so then sell next, if not then buy next
-def checkLastAction(kolikko1):
-  kk = float(client.get_asset_balance(asset=kolikko1)['free'])
-  if kk >= maara and kk > (15/float(getLastPrice(symbol))): return 'BUY'
+def checkLastAction(kolikko, maara, pari):
+  kk = float(client.get_asset_balance(asset=kolikko)['free'])
+  if kk >= maara and kk > (15/float(getLastPrice(pari))): return 'BUY'
   else: return 'SELL'
 
 #new client object
 client = Client(API_KEY, API_SECRET)
 
 #set variables and values
-BASE_URL = 'https://api.binance.com'
-SMA_POINTS = ['close', 'close'] 
 tyyppi = 'MARKET'
 balance=0
-ostolause = ''
-candles = {}
-prices = {}
+
 sma_values = {}
-symbol=checkArgs(sys.argv)
-TIMEFRAME = SIGNALS[symbol][0]
-SMA_PERIODS = [SIGNALS[symbol][1], SIGNALS[symbol][2]] 
-LIMIT_NO = max(SMA_PERIODS)
-maara = SIGNALS[symbol][3]
-kolikko1 = SIGNALS[symbol][4]
-kolikko2 = SIGNALS[symbol][5]
-last_action = getLastAction(kolikko1)
+# tiedot = [{'symbol' : , 'TIMEFRAME' : , 'SMA_PERIODS': , 'LIMIT_NO': , 'maara': , 'kolikko1': , 'kolikko2': , 'last_Action': , 'sma1_value': , 'sma2_value': }]
+tiedot = []
+for signal in SIGNALS:
+  tiedot.append({'symbol' : signal[0] , 'TIMEFRAME' : signal[1], 'SMA_PERIODS': [signal[2], signal[3]], 'LIMIT_NO': max([signal[2], signal[3]]), 'maara': signal[4], 'kolikko1': signal[5], 'kolikko2': signal[6], 'last_action': checkLastAction(signal[5], signal[4], signal[0]), 'SMA_POINTS':[signal[7],signal[8]]})
 
-logging(0, symbol, 'Starting bot...', '', 1)
-
-#set payload for fetching klines, will be fixed later to use client also
-payload = {
-  'symbol': symbol,
-  'interval': TIMEFRAME,
-  'limit': LIMIT_NO
-}      
+logging(0, '', 'Starting bot...', '', 1)
 
 #loop until end of the world
-while 1 > 0
-
-  #get candles  
-  try:
-    resp = requests.get(BASE_URL + '/api/v3/klines', params=payload)
-    klines = json.loads(resp.content)
-    parsed_klines = []
-    for k in klines:
-      k_candle = {
-        'open': float(k[1]),
-        'high': float(k[2]),
-        'low': float(k[3]),
-        'close': float(k[4]),
-        'vol': float(k[5]) 
-      } 
-      parsed_klines.append(k_candle)
-  except Exception as e:
-    logging(2, symbol, 'Getting candle failed', str(e), 1)
-    continue
-
-
-#get sma values
-  sma1 = sma.SMA(SMA_PERIODS[0])
-  sma2 = sma.SMA(SMA_PERIODS[1])
-  for kline in parsed_klines:
-  #add close values to sma objects  
-    sma1.add(kline[SMA_POINTS[0]])
-    sma2.add(kline[SMA_POINTS[1]])
-  sma1_value = sma1.v() 
-  sma2_value = sma2.v()
-  logging(0, symbol, 'SMA1: ' + str(sma1_value) + ', SMA2: ' + str(sma2_value), '', 1)
-
-
-
-#triggers buy and changes last_action
-  if (last_action == 'SELL' and sma1_value > sma2_value) or (last_action == 'BUY' and sma2_value > sma1_value):
-    logging(0, symbol, 'Trade trickered', '', 1)
-#defines clause for trade function, testing purposes use create_test_order instead of create_order
-    if  last_action == 'SELL':
-      suunta =  'BUY'
-      if maara == 0 :
-        try:
-          balance = client.get_asset_balance(asset=kolikko2)['free']
-        except Exception as e:
-          logging(2, symbol, 'getBalance failed', str(e), 1)
-          continue
-        balance = truncate(float(balance) * 0.98, 2)
-        print(balance)
-        ostolause = "client.create_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quoteOrderQty=" + str(balance) +")"
-      else: ostolause = "client.create_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quantity=" + str(maara)+")"
-    elif  last_action == 'BUY':
-      suunta =  'SELL'
-      if maara == 0 :
-        try:
-          balance = truncate(float(client.get_asset_balance(asset=kolikko1)['free']),6)
-        except Exception as e:
-          logging(2, symbol, 'getBalance failed', str(e), 1)
-          continue
-        ostolause = "client.create_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quantity=" + str(balance)+")"
-      else: ostolause = "client.create_order(symbol='" + str(symbol) + "',side='" + str(suunta) + "',type='" + str(tyyppi) + "',quantity=" + str(maara)+")"
-    logging(3, symbol, 'Trading', ostolause, 1)
-    
-#handle trade
+while True:
+  for tieto in tiedot:
+    ostolause = ''
+    #get candles  
     try:
-      buy_order = eval(ostolause)
+      resp = client.get_klines(symbol=tieto['symbol'], interval=tieto['TIMEFRAME'], limit=tieto['LIMIT_NO'])
+      parsed_klines = []
+      for k in resp:
+        k_candle = {
+          'open': float(k[1]),
+          'high': float(k[2]),
+          'low': float(k[3]),
+          'close': float(k[4]),
+          'vol': float(k[5]) 
+        } 
+        parsed_klines.append(k_candle)
     except Exception as e:
-      logging(2, symbol, 'Trade failed', str(e), 1)
-      continue      
-    logging(1, symbol, 'Trade succesfull', str(buy_order), 1)
+      logging(2, tieto['symbol'], 'Getting candle failed', str(e), 1)
+      continue
+  
+  
+  #get sma values
+    sma1 = sma.SMA(tieto['SMA_PERIODS'][0])
+    sma2 = sma.SMA(tieto['SMA_PERIODS'][1])
+    for kline in parsed_klines:
+    #add close values to sma objects  
+      sma1.add(kline[tieto['SMA_POINTS'][0]])
+      sma2.add(kline[tieto['SMA_POINTS'][1]])
+    sma1_value = sma1.v() 
+    sma2_value = sma2.v()
+    logging(0, tieto['symbol'], 'SMA1: ' + str(sma1_value) + ', SMA2: ' + str(sma2_value), '', 1)
+  
+  
+  
+  #triggers buy and changes last_action
+    if (tieto['last_action'] == 'SELL' and sma1_value > (sma2_value * 1.002)) or (tieto['last_action'] == 'BUY' and sma2_value > (sma1_value * 1.002)):
+      logging(0, tieto['symbol'], 'Trade trickered' + 'SMA1 :' + str(sma1_value) + ', SMA2: ' + str(sma2_value), '', 1)
+      
+  #defines clause for trade function, testing purposes use create_test_order instead of create_order
+      if  tieto['last_action'] == 'SELL':
+        suunta =  'BUY'
+        ostolause = "client.create_test_order(symbol='" + str(tieto['symbol']) + "',side='" + str(suunta) + "',type='" + str(tyyppi)
+        if tieto['maara'] == 0 :
+          try:
+            balance = truncate(float(client.get_asset_balance(asset=kolikko2)['free']) * 0.98, 2)
+            ostolause = ostolause + "',quoteOrderQty=" + str(balance) +")"
+          except Exception as e:
+            logging(2, tieto['symbol'], 'getBalance failed', str(e), 1)
+            continue 
+        else: ostolause = ostolause + "',quantity=" + str(tieto['maara'])+")"
+      elif  tieto['last_action'] == 'BUY':
+        suunta =  'SELL'
+        ostolause = "client.create_test_order(symbol='" + str(tieto['symbol']) + "',side='" + str(suunta) + "',type='" + str(tyyppi)
+        if tieto['maara'] == 0 :
+          try:
+            balance = truncate(float(client.get_asset_balance(asset=kolikko1)['free']),6)
+            ostolause = ostolause + "',quantity=" + str(balance)+")"
+          except Exception as e:
+            logging(2, tieto['symbol'], 'getBalance failed', str(e), 1)
+            continue
+        else: ostolause = ostolause + "',quantity=" + str(tieto['maara'])+")"
+      
+      logging(3, tieto['symbol'], 'Trading', ostolause, 1)
+      
+  #handle trade
+      try:
+        buy_order = eval(ostolause)
+      except Exception as e:
+        logging(2, tieto['symbol'], 'Trade failed', str(e), 1)
+        continue      
+      logging(1, tieto['symbol'], 'Trade succesfull, SMA1: ' + str(sma1_value) + ', SMA2: ' + str(sma2_value), str(buy_order), 1)
+  
+  #after successfull trade change it to last made action and sleep a bit before new round    
+      tieto['last_action'] = suunta
+    time.sleep(SLEEPTIME)
 
-#after successfull trade change it to last made action and sleep a bit before new round    
-    last_action = suunta
-  time.sleep(SLEEPTIME)
-filu.close()
+#The End

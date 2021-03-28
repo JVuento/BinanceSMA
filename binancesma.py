@@ -56,12 +56,12 @@ def getLastPrice(symbooli):
 #heroku config:set API_KEY=<your api key>
 #heroku config:set API_SECRET=<your api secret>
 #then bring'em here. Commented out so far
-API_KEY = os.getenv('API_KEY')
-API_SECRET = os.environ.get('API_SECRET')
+#API_KEY = os.getenv('API_KEY')
+#API_SECRET = os.environ.get('API_SECRET')
 
 argumentit = sys.argv
 client = Client(API_KEY, API_SECRET)
-if len(sys.argv)<2: symbol = 'DODOBUSD'
+if len(sys.argv)<2: symbol = 'XVSBUSD'
 else: symbol = argumentit[1]
 BASE_URL = 'https://api.binance.com'
 TIMEFRAME = SIGNALS[symbol][0]
