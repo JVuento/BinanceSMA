@@ -53,6 +53,7 @@ secret*.*
 kaupat*.*
 botlog*
 *.log
+*log*
 
 #cache
 __py*.*

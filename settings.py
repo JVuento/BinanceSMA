@@ -5,6 +5,7 @@ SIGNALS = [
   ['BAKEBUSD','4h',2,4,200,'BAKE','BUSD','close','close'],
   ['DODOBUSD','4h',2,4,54,'DODO','BUSD','close','close'],
   ['DOTBUSD','4h',2,4,5.35,'DOT','BUSD','close','close'],
+  ['BNBBUSD','4h',2,4,1,'BNB','BUSD','close','close'],
   ['XVSBUSD','4h',2,4,2,'XVS','BUSD','close','close']
   #'LINKBUSD': ['4h',2,4,1.61,'LINK','BUSD'],
   #'XMRBUSD': ['4h',2,4,0.4,'XMR','BUSD']
@@ -14,4 +15,7 @@ SIGNALS = [
 DEFPAIR = 'XVSBUSD'
 
 #set time bot waits before fetching new values
-SLEEPTIME = 1
+SLEEPTIME = 45
+
+#multiplier to awoid doing microtrades 
+MULTIP = 1.003

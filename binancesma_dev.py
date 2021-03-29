@@ -71,9 +71,9 @@ def writeHtml(lause):
 def logging(TYYPPI, PARI, LYHYT, PITKA, PRINT):
   tyypit = {0: '[INFO]', 1: '[TRADE]', 2: '[ERROR]', 3: '[SYSTEM]'}
   if PRINT == 1:
-    printtiteksti = tyypit[TYYPPI] + ', ' + PARI + ', ' + LYHYT
+    printtiteksti = str(datetime.now()) + ', ' + tyypit[TYYPPI] + ', ' + PARI + ', ' + LYHYT + ', ' + PITKA
     print(printtiteksti)
-  logiteksti = tyypit[TYYPPI] + ', ' + str(datetime.now()) + ', ' + PARI + ', ' + LYHYT + ', ' + PITKA
+  logiteksti = tyypit[TYYPPI] + ', ' + str(datetime.now()) + ', ' + PARI + ', ' + LYHYT + ', ' + PITKA + '\n'
   if TYYPPI != 0:
     if TYYPPI == 1: logfilu = open('tradelog.txt','a')
     else: logfilu = open('botlog.txt','a')
@@ -96,7 +96,7 @@ def checkLastAction(kolikko, maara, pari):
 
 #new client object
 client = Client(API_KEY, API_SECRET)
-
+logging(0, '', 'Starting bot...', '', 1)
 #set variables and values
 tyyppi = 'MARKET'
 balance=0
@@ -107,7 +107,8 @@ tiedot = []
 for signal in SIGNALS:
   tiedot.append({'symbol' : signal[0] , 'TIMEFRAME' : signal[1], 'SMA_PERIODS': [signal[2], signal[3]], 'LIMIT_NO': max([signal[2], signal[3]]), 'maara': signal[4], 'kolikko1': signal[5], 'kolikko2': signal[6], 'last_action': checkLastAction(signal[5], signal[4], signal[0]), 'SMA_POINTS':[signal[7],signal[8]]})
 
-logging(0, '', 'Starting bot...', '', 1)
+for j in tiedot:
+  logging(0, '', str(j), '', 1)
 
 #loop until end of the world
 while True:
@@ -145,13 +146,13 @@ while True:
   
   
   #triggers buy and changes last_action
-    if (tieto['last_action'] == 'SELL' and sma1_value > (sma2_value * 1.002)) or (tieto['last_action'] == 'BUY' and sma2_value > (sma1_value * 1.002)):
-      logging(0, tieto['symbol'], 'Trade trickered' + 'SMA1 :' + str(sma1_value) + ', SMA2: ' + str(sma2_value), '', 1)
+    if (tieto['last_action'] == 'SELL' and sma1_value > (sma2_value * MULTIP)) or (tieto['last_action'] == 'BUY' and sma2_value > (sma1_value * MULTIP)):
+      logging(0, tieto['symbol'], 'Trade trickered ' + 'SMA1 :' + str(sma1_MULTIPvalue) + ', SMA2: ' + str(sma2_value), '', 1)
       
   #defines clause for trade function, testing purposes use create_test_order instead of create_order
       if  tieto['last_action'] == 'SELL':
         suunta =  'BUY'
-        ostolause = "client.create_test_order(symbol='" + str(tieto['symbol']) + "',side='" + str(suunta) + "',type='" + str(tyyppi)
+        ostolause = "client.create_order(symbol='" + str(tieto['symbol']) + "',side='" + str(suunta) + "',type='" + str(tyyppi)
         if tieto['maara'] == 0 :
           try:
             balance = truncate(float(client.get_asset_balance(asset=kolikko2)['free']) * 0.98, 2)
@@ -162,7 +163,7 @@ while True:
         else: ostolause = ostolause + "',quantity=" + str(tieto['maara'])+")"
       elif  tieto['last_action'] == 'BUY':
         suunta =  'SELL'
-        ostolause = "client.create_test_order(symbol='" + str(tieto['symbol']) + "',side='" + str(suunta) + "',type='" + str(tyyppi)
+        ostolause = "client.create_order(symbol='" + str(tieto['symbol']) + "',side='" + str(suunta) + "',type='" + str(tyyppi)
         if tieto['maara'] == 0 :
           try:
             balance = truncate(float(client.get_asset_balance(asset=kolikko1)['free']),6)
@@ -172,7 +173,7 @@ while True:
             continue
         else: ostolause = ostolause + "',quantity=" + str(tieto['maara'])+")"
       
-      logging(3, tieto['symbol'], 'Trading', ostolause, 1)
+      logging(3, tieto['symbol'], 'Trading: ' + suunta, ostolause, 1)
       
   #handle trade
       try:
