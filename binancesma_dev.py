@@ -155,7 +155,7 @@ while True:
         ostolause = "client.create_order(symbol='" + str(tieto['symbol']) + "',side='" + str(suunta) + "',type='" + str(tyyppi)
         if tieto['maara'] == 0 :
           try:
-            balance = truncate(float(client.get_asset_balance(asset=kolikko2)['free']) * 0.98, 2)
+            balance = truncate(float(client.get_asset_balance(asset=tieto['kolikko2'])['free']) * 0.98, 2)
             ostolause = ostolause + "',quoteOrderQty=" + str(balance) +")"
           except Exception as e:
             logging(2, tieto['symbol'], 'getBalance failed', str(e), 1)
@@ -166,7 +166,7 @@ while True:
         ostolause = "client.create_order(symbol='" + str(tieto['symbol']) + "',side='" + str(suunta) + "',type='" + str(tyyppi)
         if tieto['maara'] == 0 :
           try:
-            balance = truncate(float(client.get_asset_balance(asset=kolikko1)['free']),6)
+            balance = truncate(float(client.get_asset_balance(asset=['kolikko1'])['free']),6)
             ostolause = ostolause + "',quantity=" + str(balance)+")"
           except Exception as e:
             logging(2, tieto['symbol'], 'getBalance failed', str(e), 1)
