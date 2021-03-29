@@ -147,7 +147,7 @@ while True:
   
   #triggers buy and changes last_action
     if (tieto['last_action'] == 'SELL' and sma1_value > (sma2_value * MULTIP)) or (tieto['last_action'] == 'BUY' and sma2_value > (sma1_value * MULTIP)):
-      logging(0, tieto['symbol'], 'Trade trickered ' + 'SMA1 :' + str(sma1_MULTIPvalue) + ', SMA2: ' + str(sma2_value), '', 1)
+      logging(0, tieto['symbol'], 'Trade trickered ' + 'SMA1 :' + str(sma1_value) + ', SMA2: ' + str(sma2_value), '', 1)
       
   #defines clause for trade function, testing purposes use create_test_order instead of create_order
       if  tieto['last_action'] == 'SELL':
