@@ -20,7 +20,7 @@ def makeTestBuy(symbooli):
 def getBalance(symbooli):
     balance = client.get_asset_balance(asset=symbooli)
     return balance
-#print(getBalance('BTC'))
+print(getBalance('BTC'))
 #example return: {'asset': 'BTC', 'free': '0.00849630', 'locked': '0.00000000'}
 
 
@@ -73,7 +73,7 @@ def writeHtml(lause):
 def getCandles():
   resp = client.get_klines(symbol='BTCUSDT', interval='1h', limit=4)
   return resp
-print(getCandles())
+#print(getCandles())
 
 #print(SIGNALS['BTCUSDT'])
 #pp = SIGNALS['BTCUSDT']

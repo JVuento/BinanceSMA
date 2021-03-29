@@ -95,11 +95,13 @@ def checkLastAction(kolikko, maara, pari):
   else: return 'SELL'
 
 #new client object
+versio='1.0001'
 client = Client(API_KEY, API_SECRET)
-logging(0, '', 'Starting bot...', '', 1)
+logging(0, '', 'Starting bot version ' + versio, '', 1)
 #set variables and values
 tyyppi = 'MARKET'
 balance=0
+versio='1.0001'
 
 sma_values = {}
 # tiedot = [{'symbol' : , 'TIMEFRAME' : , 'SMA_PERIODS': , 'LIMIT_NO': , 'maara': , 'kolikko1': , 'kolikko2': , 'last_Action': , 'sma1_value': , 'sma2_value': }]
@@ -166,7 +168,7 @@ while True:
         ostolause = "client.create_order(symbol='" + str(tieto['symbol']) + "',side='" + str(suunta) + "',type='" + str(tyyppi)
         if tieto['maara'] == 0 :
           try:
-            balance = truncate(float(client.get_asset_balance(asset=['kolikko1'])['free']),6)
+            balance = truncate(float(client.get_asset_balance(asset=tieto['kolikko1'])['free']),6)
             ostolause = ostolause + "',quantity=" + str(balance)+")"
           except Exception as e:
             logging(2, tieto['symbol'], 'getBalance failed', str(e), 1)

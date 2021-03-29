@@ -59,3 +59,5 @@ botlog*
 __py*.*
 __pycache__
 __pycache__*
+*.html
+index.html
