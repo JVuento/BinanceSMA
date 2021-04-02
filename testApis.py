@@ -1,4 +1,5 @@
 from secrets import *
+from settings import *
 from binance.client import Client
 import sys
 from datetime import datetime
@@ -20,7 +21,7 @@ def makeTestBuy(symbooli):
 def getBalance(symbooli):
     balance = client.get_asset_balance(asset=symbooli)
     return balance
-print(getBalance('BTC'))
+#print(getBalance('BTC'))
 #example return: {'asset': 'BTC', 'free': '0.00849630', 'locked': '0.00000000'}
 
 
@@ -41,9 +42,10 @@ def getTrades():
     filu = open('kaupat.txt','a')
     for each in SIGNALS:
         print(each)
-        trades = client.get_my_trades(symbol=each)
+        trades = client.get_my_trades(symbol=each[0],limit=2)
         for i in trades:
-            filu.write(str(i) + '\n')
+          i['time'] = datetime.fromtimestamp(i['time']/1000).strftime('%Y %B %d %H:%M:%S')
+          filu.write(str(i) + '\n')
     return 1
 #kk = getTrades()
 
