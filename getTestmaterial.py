@@ -6,21 +6,24 @@ BASE_URL = 'https://api.binance.com'
 TIMEFRAME = ['1h']
 SMA_PERIOD1 = 1
 SMA_PERIOD2 = 2
-symbol = 'BTCUSDT'
+symbol1 = 'BTC'
+symbol2 = 'USDT'
+symbols = 'BTCUSDT'
 LIMIT_NO = 250
 candles = {}
 prices = {}
 sma_values = {}
-filu = file.open('looppi' + str(symbol) + str(TIMEFRAME) + '.txt', 'a')
+filu = open('looppi-' + str(symbols) + '-' + str(TIMEFRAME[0].replace("'","")) + '.txt', 'a')
 payload = {
-    'symbol': symbol,
-    'interval': aika,
+    'symbol': symbols,
+    'interval': TIMEFRAME[0],
     'limit': LIMIT_NO
   }
 
 resp = requests.get(BASE_URL + '/api/v1/klines', params=payload)
 klines = json.loads(resp.content)
 parsed_klines = []
+filu.write('{'+ "'symbols':'" + symbols + "','symbol1':'" + symbol1 + "','symbol2':'" + symbol2 + "','timeframe':'" + str(TIMEFRAME[0]) + "'}" + "\n") 
 for k in klines:
   k_candle = {
     'open': float(k[1]),

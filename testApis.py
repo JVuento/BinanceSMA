@@ -42,12 +42,12 @@ def getTrades():
     filu = open('kaupat.txt','a')
     for each in SIGNALS:
         print(each)
-        trades = client.get_my_trades(symbol=each[0],limit=2)
+        trades = client.get_my_trades(symbol=each[0],limit=10)
         for i in trades:
           i['time'] = datetime.fromtimestamp(i['time']/1000).strftime('%Y %B %d %H:%M:%S')
           filu.write(str(i) + '\n')
     return 1
-#kk = getTrades()
+kk = getTrades()
 
 
 def writeHtml(lause):
