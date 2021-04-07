@@ -75,7 +75,7 @@ def writeHtml(lause):
 def getCandles():
   resp = client.get_klines(symbol='BTCUSDT', interval='1h', limit=4)
   return resp
-#print(getCandles())
+print(getCandles())
 
 #print(SIGNALS['BTCUSDT'])
 #pp = SIGNALS['BTCUSDT']

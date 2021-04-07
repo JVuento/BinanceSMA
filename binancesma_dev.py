@@ -69,7 +69,7 @@ def writeHtml(lause):
 #   0: Info, 1: Trade, 2: Error, 3: System
 # 0 is not logged only printed
 def logging(TYYPPI, PARI, LYHYT, PITKA, PRINT):
-  tyypit = {0: '[INFO]', 1: '[TRADE]', 2: '[ERROR]', 3: '[SYSTEM]'}
+  tyypit = {0: '[INFO]', 1: '[TRADE]', 2: '[ERROR]', 3: '[SYSTEM]', 4: '[TESTDATA]'}
   if PRINT == 1:
     printtiteksti = str(datetime.now()) + ', ' + tyypit[TYYPPI] + ', ' + PARI + ', ' + LYHYT + ', ' + PITKA
     print(printtiteksti)
@@ -95,19 +95,19 @@ def checkLastAction(kolikko, maara, pari):
   else: return 'SELL'
 
 #new client object
-versio='1.0001'
+versio='1.00021'
 client = Client(API_KEY, API_SECRET)
 logging(0, '', 'Starting bot version ' + versio, '', 1)
 #set variables and values
 tyyppi = 'MARKET'
 balance=0
-versio='1.0001'
+
 
 sma_values = {}
 # tiedot = [{'symbol' : , 'TIMEFRAME' : , 'SMA_PERIODS': , 'LIMIT_NO': , 'maara': , 'kolikko1': , 'kolikko2': , 'last_Action': , 'sma1_value': , 'sma2_value': }]
 tiedot = []
 for signal in SIGNALS:
-  tiedot.append({'symbol' : signal[0] , 'TIMEFRAME' : signal[1], 'SMA_PERIODS': [signal[2], signal[3]], 'LIMIT_NO': max([signal[2], signal[3]]), 'maara': signal[4], 'kolikko1': signal[5], 'kolikko2': signal[6], 'last_action': checkLastAction(signal[5], signal[4], signal[0]), 'SMA_POINTS':[signal[7],signal[8]]})
+  tiedot.append({'symbol' : signal[0] , 'TIMEFRAME' : signal[1], 'SMA_PERIODS': [signal[2], signal[3]], 'LIMIT_NO': max([signal[2], signal[3]]), 'maara': signal[4], 'kolikko1': signal[5], 'kolikko2': signal[6], 'last_action': checkLastAction(signal[5], signal[4], signal[0]), 'SMA_POINTS':[signal[7],signal[8]], 'sma1multip':signal[9], 'sma2multip':signal[10] })
 
 for j in tiedot:
   logging(0, '', str(j), '', 1)
@@ -148,7 +148,7 @@ while True:
   
   
   #triggers buy and changes last_action
-    if (tieto['last_action'] == 'SELL' and sma1_value > (sma2_value * MULTIP)) or (tieto['last_action'] == 'BUY' and sma2_value > (sma1_value * MULTIP)):
+    if (tieto['last_action'] == 'SELL' and sma1_value > (sma2_value * tieto['sma2multip'])) or (tieto['last_action'] == 'BUY' and sma2_value > (sma1_value * tieto['sma1multip'])):
       logging(0, tieto['symbol'], 'Trade trickered ' + 'SMA1 :' + str(sma1_value) + ', SMA2: ' + str(sma2_value), '', 1)
       
   #defines clause for trade function, testing purposes use create_test_order instead of create_order
@@ -157,7 +157,7 @@ while True:
         ostolause = "client.create_order(symbol='" + str(tieto['symbol']) + "',side='" + str(suunta) + "',type='" + str(tyyppi)
         if tieto['maara'] == 0 :
           try:
-            balance = truncate(float(client.get_asset_balance(asset=tieto['kolikko2'])['free']) * 0.98, 2)
+            balance = truncate(float(client.get_asset_balance(asset=tieto['kolikko2'])['free']) * 0.98, DECIMALS[tieto['kolikko2']])
             ostolause = ostolause + "',quoteOrderQty=" + str(balance) +")"
           except Exception as e:
             logging(2, tieto['symbol'], 'getBalance failed', str(e), 1)
@@ -168,7 +168,7 @@ while True:
         ostolause = "client.create_order(symbol='" + str(tieto['symbol']) + "',side='" + str(suunta) + "',type='" + str(tyyppi)
         if tieto['maara'] == 0 :
           try:
-            balance = truncate(float(client.get_asset_balance(asset=tieto['kolikko1'])['free']),6)
+            balance = truncate(float(client.get_asset_balance(asset=tieto['kolikko1'])['free']),DECIMALS[tieto['kolikko1']])
             ostolause = ostolause + "',quantity=" + str(balance)+")"
           except Exception as e:
             logging(2, tieto['symbol'], 'getBalance failed', str(e), 1)
