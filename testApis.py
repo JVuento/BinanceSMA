@@ -47,7 +47,7 @@ def getTrades():
           i['time'] = datetime.fromtimestamp(i['time']/1000).strftime('%Y %B %d %H:%M:%S')
           filu.write(str(i) + '\n')
     return 1
-kk = getTrades()
+#kk = getTrades()
 
 
 def writeHtml(lause):
@@ -84,3 +84,10 @@ def getCandles():
 #if len(sys.argv)<2: symbol = 'REEFUSDT'
 #else: symbol = argumentit[1]
 #print(symbol)
+per = [1,2,3]
+se = per.copy()
+se.pop(0)
+#print(per)
+#print(se)
+
+

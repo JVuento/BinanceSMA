@@ -13,11 +13,11 @@ for luettavafile in filet:
   
   SMA_PERIODS = [1,1]
   MAX_PERIODS = [10,15]
-  SMA_POINTS = ['close', 'open']
+  SMA_POINTS = ['close', 'close']
   candles = []
   
   multipsma1 = 1.000
-  multipsma2 = 1.000
+  multipsma2 = 1.003
   #open files with looppi in start, ex: looppi-BTCUSDT-1h.txt
   filu = open(luettavafile, 'r')
   rivit = filu.readlines()
@@ -43,10 +43,11 @@ for luettavafile in filet:
       sma1 = sma.SMA(x)
       sma2 = sma.SMA(y)
       for i in range(x):
-        sma1.add(kynttilat[0][SMA_POINTS[0]])
+        sma1.add(kynttilat[i][SMA_POINTS[0]])
       for j in range(y):
-        sma2.add(kynttilat[0][SMA_POINTS[1]])
-      kynttilat = candles.copy()
+        sma2.add(kynttilat[j][SMA_POINTS[1]])
+      for k in range(y):
+        kynttilat.pop(0)
       for kynttila in kynttilat:
         #print('added: ' + str(kynttila[SMA_POINTS[0]]))
         sma1.add(kynttila[SMA_POINTS[0]])
@@ -68,5 +69,5 @@ for luettavafile in filet:
         paras = saldo
         parassma = [x,y]
         parashold = holdi
-      #print('Saldo [' + str(x) + ',' + str(y) + ']: ' + str(saldo) + ' Holdi: ' + str(holdi) + ' Kauppoja: ' + str(kauppoja))
+      #print('Saldo: ' + str(saldo) + ' Holdi: ' + str(holdi) + ' Kauppoja: ' + str(kauppoja))
   print('Paras: ' + str(paras) + ', ' + str(parassma) + ', Hold: ' + str(parashold))  

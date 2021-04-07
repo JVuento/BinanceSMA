@@ -3,7 +3,7 @@ import json
 import os
 import time
 BASE_URL = 'https://api.binance.com'
-TIMEFRAME = ['1h']
+TIMEFRAME = ['4h']
 SMA_PERIOD1 = 1
 SMA_PERIOD2 = 2
 symbol1 = 'BTC'
@@ -34,3 +34,4 @@ for k in klines:
   }
   filu.write(str(k_candle) + '\n') 
 filu.close()
+print('Haettu')
