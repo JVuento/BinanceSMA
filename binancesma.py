@@ -8,6 +8,10 @@
 #  pip install python-binance
 #  more info about python-binance lib here: https://algotrading101.com/learn/binance-python-api-guide/
 #
+#  For python anywhere:
+#  pip3.8 install --user git+https://github.com/bitfinexcom/bfx-hf-indicators-py 
+#  pip3.8 install --user python-binance
+#
 # Remember you are using this at your own risk, don't come crying to us if it fucks up your wallet. Thank you.
 #==============================================================================================================#
 

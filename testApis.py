@@ -21,7 +21,7 @@ def makeTestBuy(symbooli):
 def getBalance(symbooli):
     balance = client.get_asset_balance(asset=symbooli)
     return balance
-#print(getBalance('BTC'))
+print(getBalance('DAI'))
 #example return: {'asset': 'BTC', 'free': '0.00849630', 'locked': '0.00000000'}
 
 
@@ -75,7 +75,7 @@ def writeHtml(lause):
 def getCandles():
   resp = client.get_klines(symbol='BTCUSDT', interval='1h', limit=4)
   return resp
-print(getCandles())
+#print(getCandles())
 
 #print(SIGNALS['BTCUSDT'])
 #pp = SIGNALS['BTCUSDT']
@@ -84,10 +84,12 @@ print(getCandles())
 #if len(sys.argv)<2: symbol = 'REEFUSDT'
 #else: symbol = argumentit[1]
 #print(symbol)
-per = [1,2,3]
-se = per.copy()
-se.pop(0)
+#per = [1,2,3]
+#se = per.copy()
+#se.pop(0)
 #print(per)
 #print(se)
-
-
+#pp = ['Buy','Buy']
+#print(not 'Buy' in pp)
+#kk = {'symbol': 'BTCDAI', 'orderId': 54189885, 'orderListId': -1, 'clientOrderId': '1bIkvtgFE9FEKLUexyP4Eu', 'transactTime': 1618300825964, 'price': '0.00000000', 'origQty': '0.01076300', 'executedQty': '0.01076300', 'cummulativeQuoteQty': '658.10890887', 'status': 'FILLED', 'timeInForce': 'GTC', 'type': 'MARKET', 'side': 'BUY', 'fills': [{'price': '61145.49000000', 'qty': '0.01076300', 'commission': '0.00089526', 'commissionAsset': 'BNB', 'tradeId': 2475086}]}
+#print(str(kk['cummulativeQuoteQty']))
