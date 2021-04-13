@@ -204,7 +204,7 @@ while True:
         summat = []
         summat = [x['last_action'] for x in buy_order]
         if buy_order = {}:
-          logging(0, tieto['symbol'], 'Using DEV-version', 1)
+          buy_order = {'symbol': 'TESTING', 'orderId': 1111, 'cummulativeQuoteQty': '123.45'}
         if buy_order['side'] == 'BUY':
           logging(1, tieto['symbol'], 'Trade succesfull, -' + str(buy_order['cummulativeQuoteQty']), 1)
         else

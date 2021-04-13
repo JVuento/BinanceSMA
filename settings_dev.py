@@ -1,6 +1,7 @@
 SIGNALS = [
-  #examples change these to match your preferences
-  #[pair, candle length, sma1, sma2, amount, coin1, coin2, smapoint1, smapoint2, sma1 multiplier, sma2 multiplier, group]
+  # examples change these to match your preferences
+  # [pair, candle length, sma1, sma2, amount, coin1, coin2, smapoint1, smapoint2, sma1 multiplier, sma2 multiplier, group]
+  # group = 0 if you dont want to group pair
 
   ['BTCUSDC','4h',5,5,0,'BTC','USDT','close','open', 1.000, 1.003, 1],
   ['XRPUSDC','4h',5,5,0,'XRP','USDC','close','open', 1.000, 1.003,1],
