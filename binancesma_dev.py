@@ -204,11 +204,12 @@ while True:
         summat = []
         summat = [x['last_action'] for x in buy_order]
         if buy_order == {}:
+          
           buy_order = {'symbol': 'TESTING', 'orderId': 1111, 'cummulativeQuoteQty': '123.45', 'side':'TEST'}
         if buy_order['side'] == 'BUY':
-          logging(1, tieto['symbol'], 'Trade succesfull, -' + str(buy_order['cummulativeQuoteQty']), 1)
+          logging(1, tieto['symbol'],'Trade succesfull', '-' + str(buy_order['cummulativeQuoteQty']), 1)
         else:
-          logging(1, tieto['symbol'], 'Trade succesfull, +' + str(buy_order['cummulativeQuoteQty']), 1)
+          logging(1, tieto['symbol'],'Trade succesfull', '+' + str(buy_order['cummulativeQuoteQty']), 1)
     #after successfull trade change it to last made action and sleep a bit before new round    
         tieto['last_action'] = suunta
       time.sleep(SLEEPTIME)
