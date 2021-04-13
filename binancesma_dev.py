@@ -130,7 +130,7 @@ while True:
       ryhma = group.copy()
     elif 'BUY' in seq:
       ryhma.append(next(item for item in group if item['last_action'] == 'BUY'))
-    logging(3, '', 'Next group ' + str()ryhma, '', 1)
+    logging(3, '', 'Next group ' + str(ryhma), '', 1)
     for tieto in ryhma:
       ostolause = ''
       #get candles  
@@ -203,11 +203,11 @@ while True:
           continue
         summat = []
         summat = [x['last_action'] for x in buy_order]
-        if buy_order = {}:
-          buy_order = {'symbol': 'TESTING', 'orderId': 1111, 'cummulativeQuoteQty': '123.45'}
+        if buy_order == {}:
+          buy_order = {'symbol': 'TESTING', 'orderId': 1111, 'cummulativeQuoteQty': '123.45', 'side':'TEST'}
         if buy_order['side'] == 'BUY':
           logging(1, tieto['symbol'], 'Trade succesfull, -' + str(buy_order['cummulativeQuoteQty']), 1)
-        else
+        else:
           logging(1, tieto['symbol'], 'Trade succesfull, +' + str(buy_order['cummulativeQuoteQty']), 1)
     #after successfull trade change it to last made action and sleep a bit before new round    
         tieto['last_action'] = suunta
