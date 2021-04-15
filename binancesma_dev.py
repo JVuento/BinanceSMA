@@ -122,15 +122,16 @@ for j in tiedot:
 while True:
   for group in groups:
     if group == []: continue
+    logging(3, '', 'Next group: ' + str(group), '', 1)
     seq = []
     seq = [x['last_action'] for x in group]
-    
+    logging(3, '', 'Next group: ' + str(group) + ', Seq: ' + str(seq), '', 1)
     ryhma = []
     if group[0]['group'] == 0 or (group[0]['group'] != 0 and (not 'BUY' in seq)):
       ryhma = group.copy()
     elif 'BUY' in seq:
       ryhma.append(next(item for item in group if item['last_action'] == 'BUY'))
-    logging(3, '', 'Next group ' + str(ryhma), '', 1)
+    logging(3, '', 'Will be handled ' + str(ryhma), '', 1)
     for tieto in ryhma:
       ostolause = ''
       #get candles  
@@ -201,8 +202,7 @@ while True:
         except Exception as e:
           logging(2, tieto['symbol'], 'Trade failed', str(e), 1)
           continue
-        summat = []
-        summat = [x['last_action'] for x in buy_order]
+
         if buy_order == {}:
           
           buy_order = {'symbol': 'TESTING', 'orderId': 1111, 'cummulativeQuoteQty': '123.45', 'side':'TEST'}

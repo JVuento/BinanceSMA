@@ -1,22 +1,18 @@
 SIGNALS = [
-  #examples change these to match your preferences
-  #[pair, candle length, sma1, sma2, amount, coin1, coin2, smapoint1, smapoint2, sma1 multiplier, sma2 multiplier]
-
-  ['BTCDAI','4h',5,5,0,'BTC','DAI','close','open', 1.000, 1.002],
-  ['XRPUSDC','4h',5,5,0,'XRP','USDC','close','open', 1.000, 1.002],
-  ['CREAMBUSD','4h',5,5,1,'CREAM','BUSD','close','open', 1.000, 1.004],
-  ['DENTUSDT','4h',5,5,5000,'DENT','USDT','close','open', 1.000, 1.004],
-  ['BNBBUSD','4h',5,5,1,'BNB','BUSD','close','open', 1.000, 1.002]
-  #['DOTBUSD','4h',5,5,4,'DOT','BUSD','close','open', 1.000, 1.002],
-  #['XVSBUSD','4h',4,4,1,'XVS','BUSD','close','open', 1.000, 1.002]
+  # examples change these to match your preferences
+  # [pair, candle length, sma1, sma2, amount, coin1, coin2, smapoint1, smapoint2, sma1 multiplier, sma2 multiplier, group]
+  # group = 0 if you dont want to group pair
+  ['BNBTUSD','4h',5,5,1,'BNB','TUSD','close','open', 1.000, 1.002,0],
+  ['ETHDAI','4h',5,5,0,'ETH','DAI','close','open', 1.000, 1.002,0],
+  ['LINKUSDC','4h',5,5,0,'LINK','USDC','close','open', 1.000, 1.003,0],
+  ['XRPBUSD','4h',5,5,0,'XRP','BUSD','close','open', 1.000, 1.002,1],
+  ['XLMBUSD','4h',5,5,0,'XLM','BUSD','close','open', 1.000, 1.002,1],
+  ['BTCUPUSDT','4h',5,5,0,'BTCUP','USDT','close','open', 1.000, 1.003,2],
+  ['BTCDOWNUSDT','4h',5,5,0,'BTCDOWN','USDT','close','open', 1.000, 1.003,2]
 ]
-
-#set deafult pair used if run without argument
-DEFPAIR = 'XVSBUSD'
 
 #set time bot waits before fetching new values
 SLEEPTIME = 45
-
 
 DECIMALS = {
   'BTC':6,
@@ -29,5 +25,12 @@ DECIMALS = {
   'XVS':3,
   'CREAM':3,
   'DENT':0,
-  'DAI':2
+  'DAI':2,
+  'DOGE':0,
+  'XLM':1,
+  'TUSD':2,
+  'ETH':5,
+  'BTCUP':2,
+  'BTCDOWN':2,
+  'LINK': 2
 }
