@@ -32,7 +32,7 @@ client = Client(API_KEY, API_SECRET)
 
 for signal in SIGNALS:
   tiedot.append({'symbol' : signal[0] , 'TIMEFRAME' : signal[1], 'SMA_PERIODS': [signal[2], signal[3]], 'LIMIT_NO': max([signal[2], signal[3]]), 'maara': signal[4], 'kolikko1': signal[5], 'kolikko2': signal[6], 'last_action': checkLastAction(signal[5], signal[4], signal[0], client), 'SMA_POINTS':[signal[7],signal[8]], 'sma1multip':signal[9], 'sma2multip':signal[10], 'group':signal[11], 'buyprice':0, 'sellprice':0, 'highprice':0, 'lowprice':0 })
-
+print(tiedot)
 #loop until end of the world
 while True:
   for tieto in tiedot:
@@ -64,17 +64,22 @@ while True:
     if case in [1,2,6]: suunta = 'BUY'
     elif case in [3,4,5]: suunta = 'SELL'
     elif case == 0: suunta = vaihdasuunta(tieto['last_action'])
-    
+    print('LAST CLOSE: ' + str(lastclose))
+    print('SUUNTA: ' + str(suunta))
+    print('LAST ACTION: ' + str(tieto['last_action']))
     #create trade clause
-    if case > 0:
+    if case > 0 and ((case in [1,2,4,5] and suunta != tieto['last_action']) or (case in [3,6] and suunta == tieto['last_action'])):
+      print('EKA IF OHI')
       kauppalause = "client.create_test_order(symbol='" + str(tieto['symbol']) + "',side='" + str(suunta) + "',type='" + str(tyyppi)
       if suunta == 'BUY':
+        print('TOKA IF BUY')
         tieto['buyprice'] = lastclose
         if tieto['maara'] == 0 :
           balance = truncate(float(client.get_asset_balance(asset=tieto['kolikko2'])['free']) * 0.98, DECIMALS[tieto['kolikko2']])
           kauppalause = kauppalause + "',quoteOrderQty=" + str(balance) +")"
         else: kauppalause = kauppalause + "',quantity=" + str(tieto['maara'])+")"
       elif suunta == 'SELL':
+        print('TOKA IF SELL')
         tieto['sellprice'] = lastclose 
         if tieto['maara'] == 0 :
           balance = truncate(float(client.get_asset_balance(asset=tieto['kolikko1'])['free']),DECIMALS[tieto['kolikko1']])
@@ -82,16 +87,26 @@ while True:
         else: kauppalause = kauppalause + "',quantity=" + str(tieto['maara'])+")"
       #do trade
       handleTrade(kauppalause)
+      print(str(suunta) + ': ' + str(lastclose))
 
     #set values depending of case if needed
     if case in [1,4]:
+      print('EKA KEISSI')
       tieto['buyprice']=0
       tieto['sellprice']=0
       tieto['highprice']=0
       tieto['lowprice']=0
       tieto['last_action'] = vaihdasuunta(tieto['last_action'])
-    elif case == 2: tieto['buyprice'] = lastclose
-    elif case == 4: tieto['sellprice'] = lastclose
+    elif case == 2:
+      print('TOKA KEISSI')
+      tieto['buyprice'] = lastclose
+      tieto['highprice']=0
+      tieto['lowprice']=0      
+    elif case == 4:
+      print('KOLMAS KEISSI')
+      tieto['sellprice'] = lastclose
+      tieto['highprice']=0
+      tieto['lowprice']=0    
     if lastclose > tieto['highprice']: tieto['highprice'] = lastclose
     elif (lastclose < tieto['lowprice']) or (tieto['lowprice'] == 0): tieto['lowprice'] = lastclose
     print(tieto)

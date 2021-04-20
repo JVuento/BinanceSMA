@@ -56,7 +56,9 @@ def handleTrade(kauppalause):
     logging(1, tieto['symbol'],'Trade succesfull', '-' + str(buy_order['cummulativeQuoteQty']), 1)
   else:
     logging(1, tieto['symbol'],'Trade succesfull', '+' + str(buy_order['cummulativeQuoteQty']), 1)'''
+  print('KAUPPAA')
   print(kauppalause)
+  
 
 def vaihdasuunta(vanha):
   uusi = ''
