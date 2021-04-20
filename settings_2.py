@@ -3,7 +3,7 @@ SIGNALS = [
   # [pair, candle length, sma1, sma2, amount, coin1, coin2, smapoint1, smapoint2, sma1 multiplier, sma2 multiplier, group]
   # group = 0 if you dont want to group pair
   ['CAKEUSDT','4h',5,5,1,'CAKE','USDT','close','open', 1.000, 1.00,0],
-  #['ETHDAI','4h',5,5,0,'ETH','DAI','close','open', 1.000, 1.002,0],
+  ['ETHDAI','4h',5,5,0,'ETH','DAI','close','open', 1.000, 1.002,0]
   #['LINKUSDC','4h',5,5,0,'LINK','USDC','close','open', 1.000, 1.003,0],
   #['XRPBUSD','4h',5,5,0,'XRP','BUSD','close','open', 1.000, 1.002,1],
   #['XLMBUSD','4h',5,5,0,'XLM','BUSD','close','open', 1.000, 1.002,1],
@@ -36,3 +36,9 @@ DECIMALS = {
   'BTCDOWN':2,
   'LINK': 2
 }
+
+versio='2.0001'
+tyyppi = 'MARKET'
+balance=0
+sma_values = {}
+tiedot = []
