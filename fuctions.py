@@ -1,6 +1,8 @@
+import os
+import math
 from math import trunc
 from datetime import datetime
-import os
+
 
 #Returns a value truncated to a specific number of decimal places.
 def truncate(number, decimals=0):
