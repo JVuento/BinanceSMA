@@ -47,15 +47,15 @@ def getCandles(symbooli, intervalli, limitti, client):
     parsed_klines.append(k_candle)
   return parsed_klines
 
-def handleTrade(kauppalause):
+def handleTrade(kauppalause, client):
   #handle trade
-  '''buy_order = eval(kauppalause)
+  buy_order = eval(kauppalause)
   if buy_order == {}:
     buy_order = {'symbol': 'TESTING', 'orderId': 1111, 'cummulativeQuoteQty': '123.45', 'side':'TEST'}
   if buy_order['side'] == 'BUY':
     logging(1, tieto['symbol'],'Trade succesfull', '-' + str(buy_order['cummulativeQuoteQty']), 1)
   else:
-    logging(1, tieto['symbol'],'Trade succesfull', '+' + str(buy_order['cummulativeQuoteQty']), 1)'''
+    logging(1, tieto['symbol'],'Trade succesfull', '+' + str(buy_order['cummulativeQuoteQty']), 1)
   print('KAUPPAA')
   print(kauppalause)
   
