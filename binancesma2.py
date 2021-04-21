@@ -87,7 +87,7 @@ while True:
             kauppalause = kauppalause + "',quantity=" + str(balance)+")"
           else: kauppalause = kauppalause + "',quantity=" + str(tieto['maara'])+")"
         #do trade
-        handleTrade(kauppalause, client)
+        handleTrade(kauppalause, client, tieto)
         print(str(suunta) + ': ' + str(lastclose))
   
       #set values depending of case if needed

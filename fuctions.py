@@ -47,7 +47,7 @@ def getCandles(symbooli, intervalli, limitti, client):
     parsed_klines.append(k_candle)
   return parsed_klines
 
-def handleTrade(kauppalause, client):
+def handleTrade(kauppalause, client, tieto):
   #handle trade
   buy_order = eval(kauppalause)
   if buy_order == {}:
