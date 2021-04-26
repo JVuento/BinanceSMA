@@ -21,8 +21,8 @@ def logging(TYYPPI, PARI, LYHYT, PITKA, PRINT):
   printtiteksti = str(datetime.now()) + ', ' + tyypit[TYYPPI] + ', ' + PARI + ', ' + LYHYT + ', ' + PITKA
   print(printtiteksti)
   logiteksti = tyypit[TYYPPI] + ', ' + str(datetime.now()) + ', ' + PARI + ', ' + LYHYT + ', ' + PITKA + '\n'
-  if TYYPPI == 1: logfilu = open('tradelog.txt','a')
-  else: logfilu = open('botlog.txt','a')
+  if TYYPPI == 1: logfilu = open('tradelog2.txt','a')
+  else: logfilu = open('botlog2.txt','a')
   logfilu.write(logiteksti)
   logfilu.close()
   
