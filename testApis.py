@@ -3,6 +3,7 @@ from settings import *
 from binance.client import Client
 import sys
 from datetime import datetime
+from bfxhfindicators import sma
 client = Client(API_KEY, API_SECRET)
 
 #get market depth
@@ -21,7 +22,7 @@ def makeTestBuy(symbooli):
 def getBalance(symbooli):
     balance = client.get_asset_balance(asset=symbooli)
     return balance
-print(getBalance('DAI'))
+#print(getBalance('DAI'))
 #example return: {'asset': 'BTC', 'free': '0.00849630', 'locked': '0.00000000'}
 
 
@@ -71,11 +72,34 @@ def writeHtml(lause):
   filu.close
 #writeHtml('BTCUSDT: stopped')
 
+
+
 #get candles
 def getCandles():
-  resp = client.get_klines(symbol='BTCUSDT', interval='1h', limit=4)
+  resp = client.get_klines(symbol='FTMUSDT', interval='4h', limit=5)
   return resp
-#print(getCandles())
+a = getCandles()
+'''
+print(a)
+sulku = 0.0 
+avaus = 0.0
+sma1 = sma.SMA(5)
+sma2 = sma.SMA(5)
+for each in a:
+  avaus = avaus + float(each[1])
+  sulku = sulku + float(each[4])
+  sma1.add(float(each[1]))
+  sma2.add(float(each[4]))
+sma1_value = sma1.v() 
+sma2_value = sma2.v()           
+sulku = sulku / len(a)
+avaus = avaus / len(a)
+print('KA open: ' + str(avaus))
+print('KA close: ' + str(sulku))
+print('SMA open: ' + str(sma1_value))
+print('SMA close: ' + str(sma2_value))
+'''
+
 
 #print(SIGNALS['BTCUSDT'])
 #pp = SIGNALS['BTCUSDT']
