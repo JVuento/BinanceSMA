@@ -98,7 +98,7 @@ while True:
         tieto['buyprice'] = lastclose
         tieto['highprice']=0
         tieto['lowprice']=0      
-      elif case == 4:
+      elif case == 5:
         tieto['sellprice'] = lastclose
         tieto['highprice']=0
         tieto['lowprice']=0    

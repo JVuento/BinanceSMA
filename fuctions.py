@@ -49,6 +49,7 @@ def getCandles(symbooli, intervalli, limitti, client):
 
 def handleTrade(kauppalause, client, tieto):
   #handle trade
+  print(kauppalause)
   buy_order = eval(kauppalause)
   if buy_order == {}:
     buy_order = {'symbol': 'TESTING', 'orderId': 1111, 'cummulativeQuoteQty': '123.45', 'side':'TEST'}
@@ -56,12 +57,39 @@ def handleTrade(kauppalause, client, tieto):
     logging(1, tieto['symbol'],'Trade succesfull', '-' + str(buy_order['cummulativeQuoteQty']), 1)
   else:
     logging(1, tieto['symbol'],'Trade succesfull', '+' + str(buy_order['cummulativeQuoteQty']), 1)
-  print('KAUPPAA')
-  print(kauppalause)
-  
 
 def vaihdasuunta(vanha):
   uusi = ''
   if vanha.upper() == 'BUY': uusi = 'SELL'
   elif vanha.upper() == 'SELL': uusi = 'BUY'
   return uusi
+
+def countRSI(lista, period):
+  if len(lista) <= period: raise Exception('Too few values to count RSI')
+  last = 0
+  gains = 0
+  losses = 0
+  for i in range(len(lista)):
+    luku = lista[i]
+    if last == 0:
+      last = luku
+    else:
+      if luku < last:
+        losses = losses + (last - luku)/last
+      elif luku > last:
+        gains = gains + (luku - last)/last
+    last = luku
+  last_loss = 0
+  last_gain = 0
+  if lista[-1] < lista[-2]: last_loss = (lista[-2] - lista[-1]) / lista[-2]
+  elif lista[-1] > lista[-2]: last_gain = (lista[-1] - lista[-2]) / lista[-2]
+  per = period-1
+  avggains = per*gains/period + last_gain/period
+  avglosses = per*losses/period + last_loss/period
+  if avglosses == 0: RSI = 100
+  elif avggains == 0: RSI = 0
+  else:
+    RS = avggains / avglosses
+    RSI = 100 - 100 / ( 1 + RS )
+  return RSI
+

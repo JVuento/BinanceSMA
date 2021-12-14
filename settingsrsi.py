@@ -2,19 +2,16 @@ SIGNALS = [
   # examples change these to match your preferences
   # [pair, candle length, sma1, sma2, amount, coin1, coin2, smapoint1, smapoint2, sma1 multiplier, sma2 multiplier, group]
   # group = 0 if you dont want to group pair
-  ['BTCDAI','8h',5,5,0,'BTC','DAI','close','open', 1.000, 1.003,0],
-  ['ICPUSDT','8h',5,5,0,'ICP','USDT','close','open', 1.000, 1.003,0],
-  ['DOGEBUSD','8h',5,5,0,'DOGE','BUSD','close','open', 1.000, 1.003,0],
-  ['ETHUSDC','8h',5,5,0,'ETH','USDC','close','open', 1.000, 1.003,0],
-  ['XRPPAX','8h',5,5,0,'XRP','PAX','close','open', 1.000, 1.003,0],
-  ['DOTBIDR','8h',5,5,0,'DOT','BIDR','close','open', 1.000, 1.003,0],
-  ['ADATUSD','8h',5,5,0,'ADA','TUSD','close','open', 1.000, 1.003,0]
+  ['BTCDAI','8h',45,65,0,9,'BTC','DAI'],
+  ['FTMUSDT','8h',45,65,0,9,'FTM','USDT'],
+  ['DOGEBUSD','8h',45,65,0,9,'DOGE','BUSD'],
+  ['ETHUSDC','8h',45,65,0,9,'ETH','USDC'],
+  ['XRPPAX','8h',45,65,0,9,'XRP','PAX'],
+  ['DOTBIDR','8h',45,65,0,9,'DOT','BIDR'],
+  ['ADATUSD','8h',45,65,0,9,'ADA','TUSD']
 ]
 
-#set time bot waits before fetching new values
 SLEEPTIME = 45
-SELLSTOP = 1.10
-BUYSTOP = 0.90
 
 DECIMALS = {
   'BTC':6,
@@ -49,8 +46,6 @@ DECIMALS = {
   'NEO':3
 }
 
-versio='3.0000'
+versio='1.00RSI'
 tyyppi = 'MARKET'
-balance=0
-sma_values = {}
 tiedot = []

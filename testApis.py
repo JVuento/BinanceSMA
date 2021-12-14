@@ -4,6 +4,7 @@ from binance.client import Client
 import sys
 from datetime import datetime
 from bfxhfindicators import sma
+from bfxhfindicators import RSI
 client = Client(API_KEY, API_SECRET)
 
 #get market depth
@@ -22,7 +23,7 @@ def makeTestBuy(symbooli):
 def getBalance(symbooli):
     balance = client.get_asset_balance(asset=symbooli)
     return balance
-#print(getBalance('DAI'))
+print(getBalance('XRP'))
 #example return: {'asset': 'BTC', 'free': '0.00849630', 'locked': '0.00000000'}
 
 
@@ -117,3 +118,29 @@ print('SMA close: ' + str(sma2_value))
 #print(not 'Buy' in pp)
 #kk = {'symbol': 'BTCDAI', 'orderId': 54189885, 'orderListId': -1, 'clientOrderId': '1bIkvtgFE9FEKLUexyP4Eu', 'transactTime': 1618300825964, 'price': '0.00000000', 'origQty': '0.01076300', 'executedQty': '0.01076300', 'cummulativeQuoteQty': '658.10890887', 'status': 'FILLED', 'timeInForce': 'GTC', 'type': 'MARKET', 'side': 'BUY', 'fills': [{'price': '61145.49000000', 'qty': '0.01076300', 'commission': '0.00089526', 'commissionAsset': 'BNB', 'tradeId': 2475086}]}
 #print(str(kk['cummulativeQuoteQty']))
+
+rsi = RSI(9)
+rsi.add(46739)
+rsi.add(49366)
+rsi.add(47767)
+rsi.add(46416)
+rsi.add(45168)
+rsi.add(43383)
+rsi.add(43374)
+rsi.add(45200)
+rsi.add(44875)
+print(rsi.v())
+
+gains = 0
+losses = 0
+gains = (49366 - 46739)/49366 + (45200 - 43374)/45200
+losses = (49366-47767)/49366 + (47767 - 46416)/47767 + (46416 - 45168)/46416 + (45168 - 43383)/45168 + (43383 - 43374)/43383 
+gains = gains * 100
+losses = losses * 100
+step1 = 100 - (100/(1 + ((gains/ 8) / (losses/8))))
+step2 = 100 -(100/(1 + ((gains/ 8) / (losses/8 + (45200 - 44875)/45200*100))))
+(45200 - 44875)/45200
+print(gains)
+print(losses)
+print(step1)
+print(step2)
