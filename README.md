@@ -1,10 +1,9 @@
 # BinanceSMA
-Trading bot for binance, uses SMAs
+Trading bots for binance
+- binanceSMA uses simple SMAs
+- binanceBTC uses simpleSMAs but also uses btc sma to decide what candles to use
+- tsl is quite simple bot to use trailing stoplosses in both directions
 
-Work in progress...
+Work in progress... might even refactor later and clean this mess. Until then we just have to manage with these
 
-This is small and simple python bot for trading in binance by 2 MA "graphs". Version 1 only gats data and writes prices in file for testing purposes.
-
-Will write more in future. 
-
-Feel free to use it. Only thing I ask is that if you find superior settings please leave comment about them for everyone else to try.
+Feel free to use it.
