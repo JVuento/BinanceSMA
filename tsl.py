@@ -60,6 +60,8 @@ while True:
           kauppalause = "client.create_order(symbol='" + str(tieto['symbol']) + "',side='SELL',type='STOP_LOSS_LIMIT',stopPrice=" + stopprice
           kauppalause = kauppalause + ",price=" + price + ",quantity=" + str(truncate(float(altmaara), tieto['trunc'])) + ",timeInForce='GTC')"
           handleTrade(kauppalause, tieto['symbol'], client)
+          loglause = 'Stop:' + str(stopprice) + ', quantity:' + str(truncate(float(altmaara)))
+          logging(1, str(tieto['symbol']),'Sell', str(loglause), 1)
         else:
           #make buy order
           stopprice = str(truncate((1+kerroin) * float(kynttila[0]['low']),tieto['trunc']))
@@ -67,6 +69,9 @@ while True:
           kauppalause = "client.create_order(symbol='" + str(tieto['symbol']) + "',side='BUY',type='STOP_LOSS_LIMIT',stopPrice=" + stopprice
           kauppalause = kauppalause + ",price=" + price + ",quantity=" + str(truncate(float(tieto['altamount']),tieto['trunc'])) +",timeInForce='GTC')"
           handleTrade(kauppalause, tieto['symbol'], client)
+          loglause = 'Stop:' + str(stopprice) + ', quantity:' + str(truncate(float(tieto['altamount'])))
+          logging(1, str(tieto['symbol']),'Buy', str(loglause), 1)
+          
       #tarkistetaan pitääkö muuttaa orderia, jos niin poistetaan vanha order
       else:
         order = order[0]     
@@ -74,12 +79,16 @@ while True:
           if (1-kerroin) * float(kynttila[0]['high']) > float(order['stopPrice']):
             cancelOrder(order['orderId'], tieto['symbol'], client)
             tauko = 0
+            loglause = 'Cancel:' + str(order['orderId'])
+            logging(1, str(tieto['symbol']),'Cancel', str(loglause), 1)
           else: continue
           
         else:
           if (1+kerroin) * float(kynttila[0]['low']) < float(order['stopPrice']):
             cancelOrder(order['orderId'], tieto['symbol'], client)
             tauko = 0
+            loglause = 'Cancel:' + str(order['orderId'])
+            logging(1, str(tieto['symbol']),'Cancel', str(loglause), 1)
           else: continue
       
     except Exception as e:

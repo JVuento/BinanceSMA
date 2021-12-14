@@ -9,8 +9,8 @@ def logging(TYYPPI, PARI, LYHYT, PITKA, PRINT):
   printtiteksti = str(datetime.now()) + ', ' + tyypit[TYYPPI] + ', ' + PARI + ', ' + LYHYT + ', ' + PITKA
   print(printtiteksti)
   logiteksti = tyypit[TYYPPI] + ', ' + str(datetime.now()) + ', ' + PARI + ', ' + LYHYT + ', ' + PITKA + '\n'
-  if TYYPPI == 1: logfilu = open('tradelog2.txt','a')
-  else: logfilu = open('botlog2.txt','a')
+  if TYYPPI == 1: logfilu = open('orderlog.txt','a')
+  else: logfilu = open('botlog.txt','a')
   logfilu.write(logiteksti)
   logfilu.close()
   
@@ -51,9 +51,9 @@ def handleTrade(kauppalause, symbooli, client):
   buy_order = eval(kauppalause)
   if buy_order == {}:
     buy_order = {'symbol': 'TESTING', 'orderId': 1111, 'cummulativeQuoteQty': '123.45', 'side':'TEST'}
-  logging(1, symbooli,'Trade order inserted', '-' + str(buy_order), 1)
+  logging(3, symbooli,'Trade order inserted', '-' + str(buy_order), 1)
 
 def cancelOrder(orderiid, symbooli, client):
   result = client.cancel_order(symbol=symbooli,orderId=orderiid)
-  logging(1, symbooli,'Trade order canceled', '-' + str(result), 1)
+  logging(3, symbooli,'Trade order canceled', '-' + str(result), 1)
   return result
