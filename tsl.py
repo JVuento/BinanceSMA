@@ -31,7 +31,6 @@ client = Client(API_KEY, API_SECRET)
 
 for coin in COINS:
   info = client.get_symbol_info(coin[0]+coin[1])
-
   #get symbols minimum ticksize
   trunc = 0.01000000
   for filter in info['filters']:
@@ -46,7 +45,8 @@ while True:
     try:
       order = client.get_open_orders(symbol=tieto['symbol'])
       kerroin = tieto['stoploss']/100
-      altmaara = client.get_asset_balance(asset=tieto['kolikko1'])['free']
+      assetti = client.get_asset_balance(asset=tieto['kolikko1'])
+      altmaara = float(assetti['free']) + float(assetti['locked'])
       last_action = checkLastAction(tieto['kolikko1'], tieto['symbol'], altmaara, client)
       kynttila = getCandles(tieto['symbol'], '5m', '1', client)
       # example kynttila: [{'open': 47503.39, 'high': 47508.54, 'low': 47000.00, 'close': 47457.98, 'vol': 1.0709}]         
