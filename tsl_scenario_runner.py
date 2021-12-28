@@ -10,13 +10,14 @@ try:
         sell_price = 0
         buy_order = 0
         sell_order = 0
+        feekerroin = 0.998
         #mplier = 1 #change this to test different percentages
         check_price = 0
         transaction = ""
         amount = 1000
         final_price = 0
         symbol = ""        
-        with open('FTMBUSD-trades-2021-lokamarras.csv', newline='') as csv_file:
+        with open('LRCUSDT-trades-2021-10.csv', newline='') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             
             for i in csv_reader:
@@ -28,7 +29,7 @@ try:
                     #print(sell_order)
                     transaction = 'BOUGHT'
                     symbol = "ALT"
-                    amount = amount / buy_price
+                    amount = amount / buy_price * feekerroin
                     #print("Initial amount: " + str(amount) + " " + symbol)         
         
                 else:         
@@ -38,7 +39,7 @@ try:
                         #sell, if the current price lower than sell_order and set a new buy_order
                         if float(i[1]) <= sell_order:
                             sell_price = float(i[1])
-                            amount = amount * sell_price
+                            amount = amount * sell_price * feekerroin
                             buy_order = sell_price * (1 + mplier/100)
                             #print("Trade made! Sold " + str(amount/sell_price) + " " + symbol + " in " + str(sell_price))
                             transaction = "SOLD"
@@ -54,7 +55,7 @@ try:
                         #buy, if the current price higher than sell order and set a new sell_order
                         if float(i[1]) >= buy_order:
                             buy_price = float(i[1])
-                            amount = amount / buy_price
+                            amount = amount / buy_price * feekerroin
                             sell_order = buy_price * (1 - mplier/100)
                             transaction = "BOUGHT"
                             symbol = "ALT"

@@ -147,11 +147,11 @@ print(step2)
 '''
 
 def twofiles():
-  filu1 = open('FTMBUSD-trades-2021-10.csv','r')
+  filu1 = open('XRPUSDT-trades-2021-10.csv','r')
   filu1data = filu1.readlines()
-  filu2 = open('FTMBUSD-trades-2021-11.csv','r')
+  filu2 = open('XRPUSDT-trades-2021-11.csv','r')
   filu2data = filu2.readlines()
-  filu3 = open('FTMBUSD-trades-2021-lokamarras.csv','a')
+  filu3 = open('XRPUSDT-trades-2021-lokamarras.csv','a')
   for line in filu1data:
     filu3.write(line)
   for line in filu2data:
