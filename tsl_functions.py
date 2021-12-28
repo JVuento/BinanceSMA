@@ -51,9 +51,9 @@ def handleTrade(kauppalause, symbooli, client):
   buy_order = eval(kauppalause)
   if buy_order == {}:
     buy_order = {'symbol': 'TESTING', 'orderId': 1111, 'cummulativeQuoteQty': '123.45', 'side':'TEST'}
-  logging(3, symbooli,'Trade order inserted', '-' + str(buy_order), 1)
+  logging(3, symbooli,'Trade order inserted', str(buy_order), 1)
 
 def cancelOrder(orderiid, symbooli, client):
   result = client.cancel_order(symbol=symbooli,orderId=orderiid)
-  logging(3, symbooli,'Trade order canceled', '-' + str(result), 1)
+  logging(3, symbooli,'Trade order canceled', str(result), 1)
   return result
