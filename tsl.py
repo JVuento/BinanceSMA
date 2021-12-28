@@ -95,6 +95,6 @@ while True:
       logging(2, tieto['symbol'], 'FAIL: ', str(e), 1)
       continue
   if tauko == 1:
-    time.sleep(100)
+    time.sleep(200)
 
   

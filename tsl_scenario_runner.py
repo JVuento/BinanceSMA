@@ -17,7 +17,7 @@ try:
         amount = 1000
         final_price = 0
         symbol = ""        
-        with open('LRCUSDT-trades-2021-10.csv', newline='') as csv_file:
+        with open('AVAXUSDT-trades-2021-11.csv', newline='') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             
             for i in csv_reader:
