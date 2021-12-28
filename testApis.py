@@ -23,7 +23,7 @@ def makeTestBuy(symbooli):
 def getBalance(symbooli):
     balance = client.get_asset_balance(asset=symbooli)
     return balance
-print(getBalance('XRP'))
+#print(getBalance('XRP'))
 #example return: {'asset': 'BTC', 'free': '0.00849630', 'locked': '0.00000000'}
 
 
@@ -79,7 +79,7 @@ def writeHtml(lause):
 def getCandles():
   resp = client.get_klines(symbol='FTMUSDT', interval='4h', limit=5)
   return resp
-a = getCandles()
+#a = getCandles()
 '''
 print(a)
 sulku = 0.0 
@@ -118,7 +118,7 @@ print('SMA close: ' + str(sma2_value))
 #print(not 'Buy' in pp)
 #kk = {'symbol': 'BTCDAI', 'orderId': 54189885, 'orderListId': -1, 'clientOrderId': '1bIkvtgFE9FEKLUexyP4Eu', 'transactTime': 1618300825964, 'price': '0.00000000', 'origQty': '0.01076300', 'executedQty': '0.01076300', 'cummulativeQuoteQty': '658.10890887', 'status': 'FILLED', 'timeInForce': 'GTC', 'type': 'MARKET', 'side': 'BUY', 'fills': [{'price': '61145.49000000', 'qty': '0.01076300', 'commission': '0.00089526', 'commissionAsset': 'BNB', 'tradeId': 2475086}]}
 #print(str(kk['cummulativeQuoteQty']))
-
+'''
 rsi = RSI(9)
 rsi.add(46739)
 rsi.add(49366)
@@ -144,3 +144,20 @@ print(gains)
 print(losses)
 print(step1)
 print(step2)
+'''
+
+def twofiles():
+  filu1 = open('FTMBUSD-trades-2021-10.csv','r')
+  filu1data = filu1.readlines()
+  filu2 = open('FTMBUSD-trades-2021-11.csv','r')
+  filu2data = filu2.readlines()
+  filu3 = open('FTMBUSD-trades-2021-lokamarras.csv','a')
+  for line in filu1data:
+    filu3.write(line)
+  for line in filu2data:
+    filu3.write(line)    
+  filu1.close
+  filu2.close
+  filu3.close
+#writeHtml('BTCUSDT: stopped')
+twofiles()
