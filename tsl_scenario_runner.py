@@ -8,26 +8,24 @@ path = os.path.join(os.path.dirname(__file__), rel_path)
 
 try:
 
-
     for filename in glob.glob(os.path.join(path, '*.csv')):
         with open(os.path.join(os.getcwd(), filename), newline='') as csv_file:
+            print("\nProcessing file: " + str(filename))               
             
             
-            for mplier in range(1,3):
+            for mplier in range(1,10):
                 counter = 0
                 buy_price = 0
                 sell_price = 0
                 buy_order = 0
                 sell_order = 0
                 fee_mplier = 0.998
-                check_price = 0
                 transaction = ""
                 amount = 1000
                 final_price = 0
                 symbol = ""
                 trade_counter = 0
-
-                print("\nProcessing file: " + str(filename) + ", mplier:" + str(mplier) + ", counter: " + str(counter))               
+             
                 f = csv.reader(csv_file, delimiter=',')
                 csv_file.seek(0)
                 for i in f:
