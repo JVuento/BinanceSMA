@@ -26,15 +26,14 @@ try:
                 final_price = 0
                 symbol = ""
                 trade_counter = 0
-                #print(mplier, counter)
+
                 print("\nProcessing file: " + str(filename) + ", mplier:" + str(mplier) + ", counter: " + str(counter))               
                 f = csv.reader(csv_file, delimiter=',')
                 csv_file.seek(0)
                 for i in f:
-                    #print(mplier, counter)
+
                     #set the initial price
                     if counter == 0:
-                        print('counter on nolla')
                         buy_price = float(i[1])
                         sell_order = buy_price * (1 - mplier/100)
                         transaction = 'BOUGHT'
