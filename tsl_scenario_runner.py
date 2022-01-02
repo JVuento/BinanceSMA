@@ -2,16 +2,29 @@ import csv
 import os
 import glob
  
-#https://www.binance.com/en/landing/data
-rel_path = "tsl_data" #assuming that there is a folder "tsl_data" in current directory
-path = os.path.join(os.path.dirname(__file__), rel_path)
+#https://www.binance.com/en/landing/data Download input files
+
+#Setting the source directory for input files in current directory
+path = os.path.join(os.path.dirname(__file__), "tsl_data")
 
 try:
 
     for filename in glob.glob(os.path.join(path, '*.csv')):
-        with open(os.path.join(os.getcwd(), filename), newline='') as csv_file:
-            print("\nProcessing file: " + str(filename))               
+        
+        #parsering the coin-pair from the filename
+        coin_pair = os.path.basename(filename).split('-')[0]
+        if len(coin_pair) == 7:
+            alt = coin_pair[0:3]
+            stable = coin_pair[3:]
+        else:
+            alt = coin_pair[0:4]
+            stable = coin_pair[4:]
             
+        with open(os.path.join(os.getcwd(), filename), newline='') as csv_file:
+            
+            print("\nProcessing file: " + os.path.basename(filename))
+            print("Alt coin: " + alt)
+            print("Stable coin: " + stable)            
             
             for mplier in range(1,10):
                 counter = 0
@@ -73,8 +86,8 @@ try:
                     counter += 1     
 
                 if symbol == "ALT":
-                    amount = amount * float(i[1]) 
-            
-                print(str(mplier) + '% : ' + str(int(amount)) + " Trades made: " + str(trade_counter))
+                    amount = amount * float(i[1])
+                    
+                print(str(mplier) + '% : ' + str(int(amount)) + " " + stable + ". Trades made: " + str(trade_counter))
 except NameError:
     print("Input file not found.")    

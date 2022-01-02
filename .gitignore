@@ -64,3 +64,4 @@ __pycache__*
 *.html
 index.html
 
+/tsl_data
