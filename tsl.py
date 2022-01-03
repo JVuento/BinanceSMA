@@ -48,6 +48,7 @@ while True:
         kauppalause = ''
         if last_action == 'BUY':
           #make sell order
+          
           stopprice = str(truncate((1-kerroin) * float(kynttila[0]['high']),tieto['tick']))
           price = str(truncate((1-kerroin*2) * float(kynttila[0]['high']),tieto['tick']))
           kauppalause = "client.create_order(symbol='" + str(tieto['symbol']) + "',side='SELL',type='STOP_LOSS_LIMIT',stopPrice=" + stopprice
