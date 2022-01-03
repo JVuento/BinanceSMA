@@ -57,3 +57,20 @@ def cancelOrder(orderiid, symbooli, client):
   result = client.cancel_order(symbol=symbooli,orderId=orderiid)
   logging(3, symbooli,'Trade order canceled', str(result), 1)
   return result
+
+def getTiedot(coins, client):
+  TIEDOT = []
+  for coin in coins:
+    info = client.get_symbol_info(coin[0]+coin[1])
+    #get symbols minimum ticksize
+    trunc = 1.00000000
+    tick = 1.00000000
+    for filter in info['filters']:
+      if filter['filterType'] == 'LOT_SIZE': trunc = filter['minQty']
+      if filter['filterType'] == 'PRICE_FILTER': tick = filter['tickSize']
+    trunc = 9 - len(str(int(float(trunc) * 100000000)))
+    tick = 9 - len(str(int(float(tick) * 100000000)))
+    #save information about symbols
+    TIEDOT.append({'symbol':coin[0]+coin[1], 'kolikko1':coin[0], 'kolikko2': coin[1], 'stoploss':coin[2], 'altamount':coin[3], 'trunc':trunc, 'tick':tick})
+  print(TIEDOT)
+  return TIEDOT
