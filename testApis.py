@@ -159,5 +159,14 @@ def twofiles():
   filu1.close
   filu2.close
   filu3.close
-#writeHtml('BTCUSDT: stopped')
-twofiles()
+#twofiles()
+
+def trunkit(symbol):
+  info = client.get_symbol_info(symbol)
+  print(info)
+  trunc = 1.00000000
+  for filter in info['filters']:
+    if filter['filterType'] == 'LOT_SIZE': trunc = filter['minQty']
+  trunc = 9 - len(str(int(float(trunc) * 100000000)))
+  print(trunc)
+trunkit('WINUSDT')

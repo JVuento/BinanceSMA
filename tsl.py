@@ -20,27 +20,21 @@ import os
 import time
 import sys
 import math
+import importlib
 from datetime import datetime
 from secrets import *
 from tsl_functions import *
-from tsl_settings import *
+import tsl_settings
 from binance.client import Client
 
-logging(3, 'BOT', 'Starting bot version ' + VERSIO, 'Peep peep boop', 1)
+logging(3, 'BOT', 'Initiating wallet destruction...', 'Peep peep boop', 1)
 client = Client(API_KEY, API_SECRET)
-
-for coin in COINS:
-  info = client.get_symbol_info(coin[0]+coin[1])
-  #get symbols minimum ticksize
-  trunc = 0.01000000
-  for filter in info['filters']:
-    if filter['filterType'] == 'PRICE_FILTER': trunc = filter['tickSize']
-  trunc = 9 - len(str(int(float(trunc) * 100000000)))
-  #save information about symbols
-  TIEDOT.append({'symbol':coin[0]+coin[1], 'kolikko1':coin[0], 'kolikko2': coin[1], 'stoploss':coin[2], 'altamount':0, 'trunc':trunc})
 
 while True:
   tauko=1
+  importlib.reload(sys.modules['tsl_settings'])
+  from tsl_settings import *
+  TIEDOT = getTiedot(COINS, client)
   for tieto in TIEDOT:
     try:
       order = client.get_open_orders(symbol=tieto['symbol'])
@@ -53,10 +47,9 @@ while True:
       if order == []:
         kauppalause = ''
         if last_action == 'BUY':
-          tieto['altamount'] = altmaara
           #make sell order
-          stopprice = str(truncate((1-kerroin) * float(kynttila[0]['high']),tieto['trunc']))
-          price = str(truncate((1-kerroin*2) * float(kynttila[0]['high']),tieto['trunc']))
+          stopprice = str(truncate((1-kerroin) * float(kynttila[0]['high']),tieto['tick']))
+          price = str(truncate((1-kerroin*2) * float(kynttila[0]['high']),tieto['tick']))
           kauppalause = "client.create_order(symbol='" + str(tieto['symbol']) + "',side='SELL',type='STOP_LOSS_LIMIT',stopPrice=" + stopprice
           kauppalause = kauppalause + ",price=" + price + ",quantity=" + str(truncate(float(altmaara), tieto['trunc'])) + ",timeInForce='GTC')"
           handleTrade(kauppalause, tieto['symbol'], client)
@@ -64,8 +57,8 @@ while True:
           logging(1, str(tieto['symbol']),'Sell', str(loglause), 1)
         else:
           #make buy order
-          stopprice = str(truncate((1+kerroin) * float(kynttila[0]['low']),tieto['trunc']))
-          price = str(truncate((1+kerroin*2) * float(kynttila[0]['low']),tieto['trunc']))
+          stopprice = str(truncate((1+kerroin) * float(kynttila[0]['low']),tieto['tick']))
+          price = str(truncate((1+kerroin*2) * float(kynttila[0]['low']),tieto['tick']))
           kauppalause = "client.create_order(symbol='" + str(tieto['symbol']) + "',side='BUY',type='STOP_LOSS_LIMIT',stopPrice=" + stopprice
           kauppalause = kauppalause + ",price=" + price + ",quantity=" + str(truncate(float(tieto['altamount']),tieto['trunc'])) +",timeInForce='GTC')"
           handleTrade(kauppalause, tieto['symbol'], client)
@@ -73,6 +66,7 @@ while True:
           logging(1, str(tieto['symbol']),'Buy', str(loglause), 1)
           
       #tarkistetaan pitääkö muuttaa orderia, jos niin poistetaan vanha order
+      #else:
       else:
         order = order[0]     
         if last_action == 'BUY':
@@ -96,5 +90,7 @@ while True:
       continue
   if tauko == 1:
     time.sleep(200)
+  else:
+    time.sleep(10)
 
   
